@@ -1,22 +1,56 @@
 import Link from "next/link";
 import { brand } from "@/config/brand";
 
+const columns = [
+  {
+    title: "Loans",
+    links: [
+      { href: "/loans/personal", label: "Personal Loan" },
+      { href: "/loans/business", label: "Business Loan" },
+      { href: "/loans/education", label: "Education Loan" },
+    ],
+  },
+  {
+    title: "Apply",
+    links: [
+      { href: "/apply", label: "Start an application" },
+      { href: "/resume", label: "Resume an application" },
+    ],
+  },
+  {
+    title: "Help",
+    links: [
+      { href: "/#how-it-works", label: "How it works" },
+      { href: "/#faq", label: "FAQ" },
+    ],
+  },
+];
+
 export function Footer() {
   return (
-    <footer className="border-t border-line bg-navy-900 text-slate-300">
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="flex flex-col gap-6 md:flex-row md:justify-between">
-          <div className="max-w-sm">
-            <p className="text-lg font-semibold text-white">{brand.name}</p>
-            <p className="mt-2 text-sm">{brand.tagline}</p>
+    <footer className="bg-navy-950 text-slate-300">
+      <div className="mx-auto max-w-6xl px-4 py-14">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+          <div>
+            <p className="text-xl font-semibold text-white">{brand.name}</p>
+            <p className="mt-3 max-w-xs text-sm">{brand.tagline}</p>
           </div>
-          <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-            <Link href="/loans" className="hover:text-white">Loans</Link>
-            <Link href="/apply" className="hover:text-white">Apply</Link>
-            <Link href="/resume" className="hover:text-white">Resume application</Link>
-          </nav>
+          {columns.map((column) => (
+            <nav key={column.title} aria-label={column.title}>
+              <p className="text-sm font-semibold text-white">{column.title}</p>
+              <ul className="mt-4 space-y-2 text-sm">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="hover:text-white">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
         </div>
-        <p className="mt-8 border-t border-white/15 pt-6 text-xs text-slate-400">
+        <p className="mt-12 border-t border-white/15 pt-6 text-xs leading-relaxed text-slate-400">
           {brand.disclaimer}
         </p>
       </div>

@@ -7,10 +7,12 @@
   --color-accent-700: #0d625b;
   --color-surface: #f6f8fb;
   --color-line: #dde3ec;
+  --color-navy-950: #071428;
+  --color-accent-400: #2dd4bf;
 }
 
 body {
-  background: #f53535;
-  color: #1057c9;
+  background: #ffffff;
+  color: #2a333f;
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }

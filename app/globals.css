@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @theme {
+  --color-navy-950: #071428;
   --color-navy-900: #0b1f3a;
   --color-navy-800: #12294a;
-  --color-accent-600: #0f766e;
-  --color-accent-700: #0d625b;
-  --color-surface: #f6f8fb;
+  --color-accent-600: #f15c1e;
+  --color-accent-700: #c2410c;
+  --color-accent-400: #ff7a3d;
+  --color-surface: #f4f6fa;
   --color-line: #dde3ec;
-  --color-navy-950: #071428;
-  --color-accent-400: #2dd4bf;
 }
 
 body {

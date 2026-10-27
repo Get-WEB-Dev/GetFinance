@@ -1,5 +1,7 @@
+
+import Image from "next/image";
 import Link from "next/link";
-import { Landmark, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { brand } from "@/config/brand";
 
 const navLinks = [
@@ -15,16 +17,29 @@ const focusRing =
 export function Header() {
   return (
     <>
-      <div className="bg-navy-950 text-xs text-slate-300">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
-          <p>Demonstration product. All figures are illustrative.</p>
-          <Link href="/resume" className="hidden hover:text-white sm:inline">
-            Resume a saved application
-          </Link>
-        </div>
-      </div>
+      <div className="bg-navy-900 text-xs text-slate-300">
+  <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
+    <p>Demonstration product. All figures are illustrative.</p>
+    <Link href="/resume" className="hidden hover:text-white sm:inline">
+      Resume a saved application
+    </Link>
+  </div>
+</div>
 
-      <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
+<header className="sticky top-0 z-40 border-b border-white/10 bg-navy-950">
+  <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-3">
+    <Link href="/" className={`rounded ${focusRing}`}>
+      <Image
+        src="/logo-light.png"
+        alt={`${brand.name} home`}
+        width={1571}
+        height={323}
+        priority
+        className="h-9 w-auto"
+      />
+    </Link>
+
+      {/* <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-4">
           <Link
             href="/"
@@ -34,7 +49,7 @@ export function Header() {
               <Landmark aria-hidden className="h-5 w-5 text-accent-400" />
             </span>
             {brand.name}
-          </Link>
+          </Link> */}
 
           <nav aria-label="Main" className="hidden items-center gap-8 md:flex">
             {navLinks.map((link) => (

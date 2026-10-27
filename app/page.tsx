@@ -1,69 +1,122 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, FileUp, ListChecks, Save, Search } from "lucide-react";
+import { brand } from "@/config/brand";
+import { loanProducts } from "@/config/loans";
+import { LoanCard } from "@/components/loans/LoanCard";
 
-export default function Home() {
+const steps = [
+  { title: "Choose a loan", text: "Pick the product that fits your purpose." },
+  { title: "Complete the form", text: "Answer a few short sections at your own pace." },
+  { title: "Add documents", text: "Attach the documents your loan type needs." },
+  { title: "Review and sign", text: "Check everything, then sign with a simulated e-signature." },
+];
+
+const features = [
+  { icon: FileUp, title: "Document upload", text: "See exactly which documents are required and which are still missing." },
+  { icon: Save, title: "Progress saving", text: "Your draft saves automatically, so you can leave and come back." },
+  { icon: Search, title: "Application tracking", text: "Every application gets a reference number you can use to resume." },
+  { icon: ListChecks, title: "Clear validation", text: "Mistakes are flagged as you type, not after you submit." },
+];
+
+const faqs = [
+  { q: "Do I need an account?", a: "No. You can start straight away and resume later using your application reference." },
+  { q: "Is this a real loan offer?", a: "No. GetFinance is a demonstration. Every figure and result shown is illustrative." },
+  { q: "Can I save and finish later?", a: "Yes. Your progress saves automatically in this browser." },
+  { q: "What documents will I need?", a: "It depends on the loan type, and the application tells you at the document step." },
+];
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      {/* Hero */}
+      <section className="bg-surface">
+        <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
+          <p className="text-sm font-medium uppercase tracking-wide text-accent-700">
+            {brand.name}
           </p>
+          <h1 className="mt-3 max-w-2xl text-4xl font-semibold text-navy-900 md:text-5xl">
+            Apply for a loan online, without the paperwork maze.
+          </h1>
+          <p className="mt-4 max-w-xl text-lg text-slate-600">
+            Choose a loan, complete a short guided application, and get an
+            illustrative pre-approval summary. Your progress saves as you go.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              href="/apply"
+              className="inline-flex items-center gap-2 rounded-md bg-accent-600 px-5 py-3 font-medium text-white hover:bg-accent-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600"
+            >
+              Apply now <ArrowRight aria-hidden className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/loans"
+              className="inline-flex items-center rounded-md border border-navy-900 px-5 py-3 font-medium text-navy-900 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600"
+            >
+              Explore loans
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Loan previews */}
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-2xl font-semibold text-navy-900">Our loans</h2>
+        <p className="mt-2 text-slate-600">Three sample products. All figures are illustrative.</p>
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {loanProducts.map((product) => (
+            <LoanCard key={product.type} product={product} />
+          ))}
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how-it-works" className="bg-surface">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <h2 className="text-2xl font-semibold text-navy-900">How applying works</h2>
+          <ol className="mt-8 grid gap-6 md:grid-cols-4">
+            {steps.map((step, index) => (
+              <li key={step.title} className="rounded-lg border border-line bg-white p-5">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-navy-900 text-sm font-semibold text-white">
+                  {index + 1}
+                </span>
+                <h3 className="mt-3 font-semibold text-navy-900">{step.title}</h3>
+                <p className="mt-1 text-sm text-slate-600">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-2xl font-semibold text-navy-900">Built to make applying easier</h2>
+        <div className="mt-8 grid gap-8 sm:grid-cols-2">
+          {features.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="flex gap-4">
+              <Icon aria-hidden className="mt-1 h-6 w-6 shrink-0 text-accent-600" />
+              <div>
+                <h3 className="font-semibold text-navy-900">{title}</h3>
+                <p className="mt-1 text-sm text-slate-600">{text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="bg-surface">
+        <div className="mx-auto max-w-3xl px-4 py-16">
+          <h2 className="text-2xl font-semibold text-navy-900">Frequently asked questions</h2>
+          <div className="mt-6 divide-y divide-line rounded-lg border border-line bg-white">
+            {faqs.map((faq) => (
+              <details key={faq.q} className="group p-5">
+                <summary className="cursor-pointer font-medium text-navy-900">{faq.q}</summary>
+                <p className="mt-2 text-sm text-slate-600">{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

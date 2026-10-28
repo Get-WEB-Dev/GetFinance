@@ -5,9 +5,10 @@ import { getStepPath, steps, type StepSlug } from "@/config/steps";
 interface ProgressIndicatorProps {
   applicationId: string;
   currentSlug: StepSlug | null;
+  completedSteps: StepSlug[];
 }
 
-export function ProgressIndicator({ applicationId, currentSlug }: ProgressIndicatorProps) {
+export function ProgressIndicator({ applicationId, currentSlug, completedSteps }: ProgressIndicatorProps) {
   const total = steps.length;
   const currentIndex = steps.findIndex((s) => s.slug === currentSlug);
   const percent = currentIndex < 0 ? 0 : Math.round(((currentIndex + 1) / total) * 100);
@@ -38,8 +39,12 @@ export function ProgressIndicator({ applicationId, currentSlug }: ProgressIndica
       {/* Full step list for large screens */}
       <ol className="hidden space-y-1 lg:block">
         {steps.map((step, index) => {
-          const state =
-            index < currentIndex ? "complete" : index === currentIndex ? "current" : "upcoming";
+         const state =
+  step.slug === currentSlug
+    ? "current"
+    : completedSteps.includes(step.slug)
+      ? "complete"
+      : "upcoming";
 
           const marker = (
             <span
@@ -93,3 +98,4 @@ export function ProgressIndicator({ applicationId, currentSlug }: ProgressIndica
     </nav>
   );
 }
+

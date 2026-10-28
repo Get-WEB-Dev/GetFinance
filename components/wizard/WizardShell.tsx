@@ -78,7 +78,7 @@ export function WizardShell({
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[260px_1fr]">
         <aside>
-          <ProgressIndicator applicationId={applicationId} currentSlug={currentSlug} />
+          <ProgressIndicator applicationId={applicationId} currentSlug={currentSlug} completedSteps={draft.completedSteps} />
         </aside>
         <div>{children}</div>
       </div>

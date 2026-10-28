@@ -13,5 +13,6 @@ export function createDraft(loanType: LoanType): ApplicationDraft {
     currentStep: "applicant",
     createdAt: now,
     updatedAt: now,
+    completedSteps: ["loan-selection"],
   };
 }

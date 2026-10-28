@@ -1,27 +1,45 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { StepSlug } from "@/config/steps";
+import { useRouter } from "next/navigation";
+import { getStepPath, type StepSlug } from "@/config/steps";
+import { canAccessStep, getFirstIncompleteStep } from "@/lib/draft/completion";
 import { useDraft } from "./DraftProvider";
 
 interface StepLayoutProps {
   slug: StepSlug;
   title: string;
   description?: string;
+  guard?: boolean;
   children: React.ReactNode;
 }
 
-export function StepLayout({ slug, title, description, children }: StepLayoutProps) {
-  const { updateDraft } = useDraft();
+export function StepLayout({ slug, title, description, guard = true, children }: StepLayoutProps) {
+  const router = useRouter();
+  const { draft, updateDraft } = useDraft();
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  useEffect(() => {
-    headingRef.current?.focus();
-  }, [slug]);
+  const allowed = !guard || !draft || canAccessStep(draft.completedSteps, slug);
+  const redirectTo =
+    draft && !allowed ? getStepPath(draft.id, getFirstIncompleteStep(draft.completedSteps)) : null;
 
   useEffect(() => {
+    if (redirectTo) router.replace(redirectTo);
+  }, [redirectTo, router]);
+
+  useEffect(() => {
+    if (!allowed) return;
+    headingRef.current?.focus();
     void updateDraft({ currentStep: slug });
-  }, [slug, updateDraft]);
+  }, [allowed, slug, updateDraft]);
+
+  if (!allowed) {
+    return (
+      <p role="status" className="text-slate-600">
+        Taking you to the next step you need to complete…
+      </p>
+    );
+  }
 
   return (
     <section>

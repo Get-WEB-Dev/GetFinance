@@ -16,7 +16,7 @@ export default async function PlaceholderStepPage({
   const showBack = previous !== undefined && previous !== "loan-selection";
 
   return (
-    <StepLayout slug={step} title={getStepLabel(step)}>
+    <StepLayout slug={step} title={getStepLabel(step)} guard={false}>
       <p className="rounded-lg border border-dashed border-line bg-surface p-6 text-sm text-slate-600">
         This step is built in a later lesson. For now, use the buttons below to move through the
         wizard and test navigation, progress and saving.

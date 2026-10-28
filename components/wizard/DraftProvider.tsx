@@ -13,7 +13,9 @@ import { draftRepository } from "@/lib/persistence";
 import type { ApplicationDraft, SaveState } from "@/types/application";
 
 type LoadStatus = "loading" | "ready" | "missing";
-export type DraftPatch = Partial<Pick<ApplicationDraft, "currentStep" | "loanType">>;
+export type DraftPatch = Partial<
+  Pick<ApplicationDraft, "currentStep" | "loanType" | "completedSteps" | "applicant">
+>;
 
 interface DraftContextValue {
   status: LoadStatus;
@@ -103,4 +105,9 @@ export function useDraft(): DraftContextValue {
   const context = useContext(DraftContext);
   if (!context) throw new Error("useDraft must be used inside <DraftProvider>.");
   return context;
+}
+export function useReadyDraft() {
+  const { draft, ...rest } = useDraft();
+  if (!draft) throw new Error("useReadyDraft must be used where a draft is loaded.");
+  return { draft, ...rest };
 }

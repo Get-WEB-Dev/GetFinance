@@ -23,6 +23,7 @@ import {
   sanitizeAddress,
   type AddressFormValues,
 } from "@/lib/validation/address";
+import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 
 export function AddressForm() {
   const router = useRouter();
@@ -47,6 +48,7 @@ export function AddressForm() {
   useAutosave(form, (values) => {
     void updateDraft({ address: values });
   });
+  useReviewOnMount(form, "address");
 
   async function onSubmit(values: AddressFormValues) {
     await updateDraft({

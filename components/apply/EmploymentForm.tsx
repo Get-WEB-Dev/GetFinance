@@ -23,6 +23,7 @@ import {
   sanitizeEmployment,
   type EmploymentFormValues,
 } from "@/lib/validation/employment";
+import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 
 export function EmploymentForm() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export function EmploymentForm() {
   useAutosave(form, (values) => {
     void updateDraft({ employment: values });
   });
-
+  useReviewOnMount(form, "employment");
   async function onSubmit(values: EmploymentFormValues) {
     await updateDraft({
       employment: sanitizeEmployment(values),

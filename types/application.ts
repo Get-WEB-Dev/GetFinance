@@ -13,13 +13,29 @@ export interface ApplicationDraft {
   loanType: LoanType;
   currentStep: StepSlug;
   completedSteps: StepSlug[];
+  stepsToReview: StepSlug[];
   applicant?: ApplicantFormValues;
-  createdAt: string;
-  updatedAt: string;
   address?: AddressFormValues;
   employment?: EmploymentFormValues;
   loanDetails?: LoanDetailsFormValues;
   finances?: FinancesFormValues;
+  createdAt: string;
+  updatedAt: string;
 }
+
+export type DraftPatch = Partial<
+  Pick<
+    ApplicationDraft,
+    | "currentStep"
+    | "loanType"
+    | "completedSteps"
+    | "stepsToReview"
+    | "applicant"
+    | "address"
+    | "employment"
+    | "loanDetails"
+    | "finances"
+  >
+>;
 
 export type SaveState = "saved" | "saving" | "error";

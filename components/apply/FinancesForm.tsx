@@ -22,6 +22,7 @@ import {
   sanitizeFinances,
   type FinancesFormValues,
 } from "@/lib/validation/finances";
+import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 
 export function FinancesForm() {
   const router = useRouter();
@@ -51,6 +52,8 @@ export function FinancesForm() {
   useAutosave(form, (values) => {
     void updateDraft({ finances: values });
   });
+
+  useReviewOnMount(form, "finances");
 
   async function onSubmit(values: FinancesFormValues) {
     await updateDraft({

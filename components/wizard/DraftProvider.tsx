@@ -10,22 +10,12 @@ import {
   useState,
 } from "react";
 import { draftRepository } from "@/lib/persistence";
-import type { ApplicationDraft, SaveState } from "@/types/application";
+import type { ApplicationDraft, DraftPatch, SaveState } from "@/types/application";
+import { reconcileDraft } from "@/lib/draft/reconcile";
+
 
 type LoadStatus = "loading" | "ready" | "missing";
-export type DraftPatch = Partial<
-  Pick<
-    ApplicationDraft,
-    | "currentStep"
-    | "loanType"
-    | "completedSteps"
-    | "applicant"
-    | "address"
-    | "employment"
-    | "loanDetails"
-    | "finances"
-  >
->;
+
 
 interface DraftContextValue {
   status: LoadStatus;
@@ -80,10 +70,22 @@ export function DraftProvider({
     );
     if (!changed) return;
 
-    const next: ApplicationDraft = {
+        let next: ApplicationDraft = {
       ...current,
       ...patch,
       updatedAt: new Date().toISOString(),
+    };
+
+    const completed = patch.completedSteps;
+    if (completed) {
+      next.stepsToReview = (patch.stepsToReview ?? current.stepsToReview).filter(
+        (slug) => !completed.includes(slug),
+      );
+    }
+
+    if (completed || patch.loanType) {
+      next = reconcileDraft(next);
+    
     };
     draftRef.current = next;
     setDraft(next);

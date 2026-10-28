@@ -14,5 +14,6 @@ export function createDraft(loanType: LoanType): ApplicationDraft {
     createdAt: now,
     updatedAt: now,
     completedSteps: ["loan-selection"],
+    stepsToReview: [],
   };
 }

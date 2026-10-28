@@ -6,6 +6,7 @@ import { getLoanProduct } from "@/config/loans";
 import { isStepSlug } from "@/config/steps";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ChangeLoanTypeButton } from "./ChangeLoanTypeButton";
 import { ProgressIndicator } from "./ProgressIndicator";
 import { SaveStatus } from "./SaveStatus";
 import { useDraft } from "./DraftProvider";
@@ -68,8 +69,10 @@ export function WizardShell({
           <p className="font-mono text-sm font-semibold text-navy-900">{draft.reference}</p>
           <p className="text-sm text-slate-600">{product.name}</p>
         </div>
-        <div className="flex items-center gap-4">
+
+        <div className="flex flex-wrap items-center gap-4">
           <SaveStatus state={saveState} />
+          <ChangeLoanTypeButton />
           <Button variant="secondary" onClick={() => setConfirmOpen(true)}>
             Discard draft
           </Button>
@@ -78,9 +81,14 @@ export function WizardShell({
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[260px_1fr]">
         <aside>
-          <ProgressIndicator applicationId={applicationId} currentSlug={currentSlug} completedSteps={draft.completedSteps} />
+          <ProgressIndicator
+            applicationId={applicationId}
+            currentSlug={currentSlug}
+            completedSteps={draft.completedSteps}
+            stepsToReview={draft.stepsToReview}
+          />
         </aside>
-        <div>{children}</div>
+        <div key={draft.loanType}>{children}</div>
       </div>
 
       <ConfirmDialog

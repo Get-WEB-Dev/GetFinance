@@ -16,6 +16,7 @@ export const draftSchema = z.object({
   loanType: z.custom<LoanType>((v) => typeof v === "string" && isLoanType(v)),
   currentStep: stepSlugSchema,
   completedSteps: z.array(stepSlugSchema).default(["loan-selection"]),
+  stepsToReview: z.array(stepSlugSchema).default([]),
   applicant: applicantStoredSchema.optional(),
   createdAt: z.string(),
   updatedAt: z.string(),

@@ -17,6 +17,7 @@ import {
   emptyApplicant,
   type ApplicantFormValues,
 } from "@/lib/validation/applicant";
+import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 
 export function ApplicantForm() {
   const router = useRouter();
@@ -37,6 +38,8 @@ export function ApplicantForm() {
   useAutosave(form, (values) => {
     void updateDraft({ applicant: values });
   });
+
+  useReviewOnMount(form, "applicant"); 
 
   async function onSubmit(values: ApplicantFormValues) {
     await updateDraft({

@@ -8,8 +8,11 @@ interface ConfirmDialogProps {
   title: string;
   description: string;
   confirmLabel: string;
+  confirmVariant?: "danger" | "primary";
+  confirmDisabled?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  children?: React.ReactNode;
 }
 
 export function ConfirmDialog({
@@ -17,8 +20,11 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
+  confirmVariant = "danger",
+  confirmDisabled = false,
   onConfirm,
   onCancel,
+  children,
 }: ConfirmDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -42,11 +48,12 @@ export function ConfirmDialog({
           {title}
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">{description}</p>
+        {children}
         <div className="mt-6 flex justify-end gap-3">
           <Button variant="secondary" onClick={onCancel}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={onConfirm}>
+          <Button variant={confirmVariant} disabled={confirmDisabled} onClick={onConfirm}>
             {confirmLabel}
           </Button>
         </div>

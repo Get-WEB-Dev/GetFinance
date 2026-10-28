@@ -26,6 +26,7 @@ import {
   sanitizeLoanDetails,
   type LoanDetailsFormValues,
 } from "@/lib/validation/loan-details";
+import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 
 export function LoanDetailsForm() {
   const router = useRouter();
@@ -53,6 +54,8 @@ export function LoanDetailsForm() {
   useAutosave(form, (values) => {
     void updateDraft({ loanDetails: values });
   });
+
+  useReviewOnMount(form, "loan-details");
 
   async function onSubmit(values: LoanDetailsFormValues) {
     await updateDraft({

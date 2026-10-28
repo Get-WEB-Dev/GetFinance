@@ -1,0 +1,163 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, useWatch } from "react-hook-form";
+import { Button, ButtonLink } from "@/components/ui/Button";
+import { ErrorSummary } from "@/components/ui/ErrorSummary";
+import { SelectField } from "@/components/ui/SelectField";
+import { TextAreaField } from "@/components/ui/TextAreaField";
+import { TextField } from "@/components/ui/TextField";
+import { useReadyDraft } from "@/components/wizard/DraftProvider";
+import { StepActions } from "@/components/wizard/StepLayout";
+import { stateOptions } from "@/config/india-states";
+import { residenceTypeOptions } from "@/config/options";
+import { addressRules } from "@/config/rules";
+import { getStepPath } from "@/config/steps";
+import { useAutosave } from "@/hooks/use-autosave";
+import { withCompletedStep } from "@/lib/draft/completion";
+import {
+  addressSchema,
+  emptyAddress,
+  needsPreviousAddress,
+  sanitizeAddress,
+  type AddressFormValues,
+} from "@/lib/validation/address";
+
+export function AddressForm() {
+  const router = useRouter();
+  const { draft, updateDraft } = useReadyDraft();
+
+  const form = useForm<AddressFormValues>({
+    resolver: zodResolver(addressSchema),
+    mode: "onTouched",
+    defaultValues: draft.address ?? emptyAddress,
+  });
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting, submitCount },
+  } = form;
+
+  const yearsAtAddress = useWatch({ control, name: "yearsAtAddress" });
+  const showPreviousAddress = needsPreviousAddress(yearsAtAddress ?? "");
+
+  useAutosave(form, (values) => {
+    void updateDraft({ address: values });
+  });
+
+  async function onSubmit(values: AddressFormValues) {
+    await updateDraft({
+      address: sanitizeAddress(values),
+      completedSteps: withCompletedStep(draft.completedSteps, "address"),
+    });
+    router.push(getStepPath(draft.id, "employment"));
+  }
+
+  const summaryItems = Object.entries(errors).flatMap(([name, error]) =>
+    error?.message ? [{ name, message: error.message }] : [],
+  );
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <ErrorSummary items={summaryItems} focusKey={submitCount} />
+
+      <p className="text-sm text-slate-600">
+        <span aria-hidden className="text-red-700">
+          *
+        </span>{" "}
+        Required field
+      </p>
+
+      <div className="mt-6 grid gap-6 md:grid-cols-2">
+        <div className="md:col-span-2">
+          <TextField
+            label="Address line 1"
+            autoComplete="address-line1"
+            hint="House or flat number and street."
+            error={errors.addressLine1?.message}
+            {...register("addressLine1")}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <TextField
+            label="Address line 2"
+            optional
+            autoComplete="address-line2"
+            hint="Area, landmark or locality."
+            error={errors.addressLine2?.message}
+            {...register("addressLine2")}
+          />
+        </div>
+
+        <TextField
+          label="City or town"
+          autoComplete="address-level2"
+          error={errors.city?.message}
+          {...register("city")}
+        />
+        <SelectField
+          label="State or union territory"
+          options={stateOptions}
+          autoComplete="address-level1"
+          error={errors.state?.message}
+          {...register("state")}
+        />
+        <TextField
+          label="PIN code"
+          inputMode="numeric"
+          maxLength={6}
+          autoComplete="postal-code"
+          error={errors.pincode?.message}
+          {...register("pincode")}
+        />
+        <TextField
+          label="Country"
+          readOnly
+          error={errors.country?.message}
+          {...register("country")}
+        />
+
+        <SelectField
+          label="Residence type"
+          options={residenceTypeOptions}
+          error={errors.residenceType?.message}
+          {...register("residenceType")}
+        />
+        <TextField
+          label="Years at this address"
+          inputMode="numeric"
+          maxLength={2}
+          hint="Enter 0 if less than a year."
+          error={errors.yearsAtAddress?.message}
+          {...register("yearsAtAddress")}
+        />
+
+        {showPreviousAddress && (
+          <div className="md:col-span-2">
+            <TextAreaField
+              label="Previous address"
+              hint={`Required because you've lived here for less than ${addressRules.historyYears} years.`}
+              error={errors.previousAddress?.message}
+              {...register("previousAddress")}
+            />
+          </div>
+        )}
+      </div>
+
+      <StepActions
+        back={
+          <ButtonLink href={getStepPath(draft.id, "applicant")} variant="secondary">
+            Back
+          </ButtonLink>
+        }
+      >
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Saving…" : "Save and continue"}
+        </Button>
+      </StepActions>
+    </form>
+  );
+}

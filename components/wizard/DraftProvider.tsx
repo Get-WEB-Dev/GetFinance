@@ -14,7 +14,10 @@ import type { ApplicationDraft, SaveState } from "@/types/application";
 
 type LoadStatus = "loading" | "ready" | "missing";
 export type DraftPatch = Partial<
-  Pick<ApplicationDraft, "currentStep" | "loanType" | "completedSteps" | "applicant">
+  Pick<
+    ApplicationDraft,
+    "currentStep" | "loanType" | "completedSteps" | "applicant" | "address" | "employment"
+  >
 >;
 
 interface DraftContextValue {

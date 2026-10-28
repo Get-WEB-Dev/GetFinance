@@ -1,5 +1,5 @@
 import { forwardRef, type ComponentPropsWithoutRef } from "react";
-import { AlertCircle } from "lucide-react";
+import { FieldShell, describedBy } from "./FieldShell";
 
 interface TextFieldProps extends ComponentPropsWithoutRef<"input"> {
   label: string;
@@ -7,57 +7,38 @@ interface TextFieldProps extends ComponentPropsWithoutRef<"input"> {
   error?: string;
   hint?: string;
   optional?: boolean;
+  startAdornment?: string;
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
-  { label, name, error, hint, optional = false, className = "", ...inputProps },
+  { label, name, error, hint, optional = false, startAdornment, ...inputProps },
   ref,
 ) {
   const id = `field-${name}`;
-  const hintId = `${id}-hint`;
-  const errorId = `${id}-error`;
-  const describedBy = [hint ? hintId : null, errorId].filter(Boolean).join(" ");
 
   return (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-navy-900">
-        {label}
-        {optional ? (
-          <span className="ml-1 font-normal text-slate-500">(optional)</span>
-        ) : (
-          <span aria-hidden className="ml-0.5 text-red-700">
-            *
+    <FieldShell id={id} label={label} hint={hint} error={error} optional={optional}>
+      <div
+        className={`mt-2 flex items-stretch overflow-hidden rounded-md border focus-within:outline-2 focus-within:outline-offset-1 focus-within:outline-accent-600 ${
+          error ? "border-red-600" : "border-slate-300"
+        } ${inputProps.readOnly ? "bg-surface" : "bg-white"}`}
+      >
+        {startAdornment && (
+          <span aria-hidden className="flex items-center border-r border-slate-300 bg-surface px-3 text-slate-600">
+            {startAdornment}
           </span>
         )}
-      </label>
-
-      {hint && (
-        <p id={hintId} className="mt-1 text-sm text-slate-500">
-          {hint}
-        </p>
-      )}
-
-      <input
-        {...inputProps}
-        ref={ref}
-        id={id}
-        name={name}
-        aria-required={!optional}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy}
-        className={`mt-2 block w-full rounded-md border bg-white px-3 py-2.5 text-navy-900 placeholder:text-slate-400 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent-600 ${
-          error ? "border-red-600" : "border-slate-300"
-        } ${className}`}
-      />
-
-      <div id={errorId} aria-live="polite">
-        {error && (
-          <p className="mt-2 flex items-start gap-1.5 text-sm font-medium text-red-700">
-            <AlertCircle aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
-            {error}
-          </p>
-        )}
+        <input
+          {...inputProps}
+          ref={ref}
+          id={id}
+          name={name}
+          aria-required={optional || inputProps.readOnly ? undefined : true}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy(id, Boolean(hint))}
+          className="block w-full bg-transparent px-3 py-2.5 text-navy-900 placeholder:text-slate-400 focus:outline-none"
+        />
       </div>
-    </div>
+    </FieldShell>
   );
 });

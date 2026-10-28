@@ -20,3 +20,18 @@ export function isStepSlug(value: string): value is StepSlug {
 export function getStepPath(applicationId: string, slug: StepSlug): string {
   return slug === "loan-selection" ? "/apply" : `/apply/${applicationId}/${slug}`;
 }
+export function getStepLabel(slug: StepSlug): string {
+  const step = steps.find((s) => s.slug === slug);
+  return step ? step.label : slug;
+}
+
+export function getAdjacentSteps(slug: StepSlug): {
+  previous: StepSlug | undefined;
+  next: StepSlug | undefined;
+} {
+  const index = steps.findIndex((s) => s.slug === slug);
+  return {
+    previous: index > 0 ? steps[index - 1].slug : undefined,
+    next: index < steps.length - 1 ? steps[index + 1].slug : undefined,
+  };
+}

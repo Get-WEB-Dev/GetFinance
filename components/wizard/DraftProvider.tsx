@@ -1,0 +1,106 @@
+"use client";
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { draftRepository } from "@/lib/persistence";
+import type { ApplicationDraft, SaveState } from "@/types/application";
+
+type LoadStatus = "loading" | "ready" | "missing";
+export type DraftPatch = Partial<Pick<ApplicationDraft, "currentStep" | "loanType">>;
+
+interface DraftContextValue {
+  status: LoadStatus;
+  draft: ApplicationDraft | null;
+  saveState: SaveState;
+  updateDraft: (patch: DraftPatch) => Promise<void>;
+  discard: () => Promise<void>;
+}
+
+const DraftContext = createContext<DraftContextValue | null>(null);
+
+export function DraftProvider({
+  applicationId,
+  children,
+}: {
+  applicationId: string;
+  children: React.ReactNode;
+}) {
+  const [status, setStatus] = useState<LoadStatus>("loading");
+  const [draft, setDraft] = useState<ApplicationDraft | null>(null);
+  const [saveState, setSaveState] = useState<SaveState>("saved");
+
+  const draftRef = useRef<ApplicationDraft | null>(null);
+  const saveTicket = useRef(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    draftRepository
+      .load(applicationId)
+      .then((loaded) => {
+        if (cancelled) return;
+        draftRef.current = loaded;
+        setDraft(loaded);
+        setStatus(loaded ? "ready" : "missing");
+      })
+      .catch(() => {
+        if (!cancelled) setStatus("missing");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [applicationId]);
+
+  const updateDraft = useCallback(async (patch: DraftPatch) => {
+    const current = draftRef.current;
+    if (!current) return;
+
+    const changed = (Object.keys(patch) as (keyof DraftPatch)[]).some(
+      (key) => patch[key] !== current[key],
+    );
+    if (!changed) return;
+
+    const next: ApplicationDraft = {
+      ...current,
+      ...patch,
+      updatedAt: new Date().toISOString(),
+    };
+    draftRef.current = next;
+    setDraft(next);
+
+    const ticket = ++saveTicket.current;
+    setSaveState("saving");
+    try {
+      await draftRepository.save(next);
+      if (ticket === saveTicket.current) setSaveState("saved");
+    } catch {
+      if (ticket === saveTicket.current) setSaveState("error");
+    }
+  }, []);
+
+  const discard = useCallback(async () => {
+    draftRef.current = null;
+    await draftRepository.remove(applicationId);
+  }, [applicationId]);
+
+  const value = useMemo(
+    () => ({ status, draft, saveState, updateDraft, discard }),
+    [status, draft, saveState, updateDraft, discard],
+  );
+
+  return <DraftContext.Provider value={value}>{children}</DraftContext.Provider>;
+}
+
+export function useDraft(): DraftContextValue {
+  const context = useContext(DraftContext);
+  if (!context) throw new Error("useDraft must be used inside <DraftProvider>.");
+  return context;
+}

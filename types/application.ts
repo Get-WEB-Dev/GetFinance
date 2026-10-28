@@ -10,3 +10,4 @@ export interface ApplicationDraft {
   createdAt: string;
   updatedAt: string;
 }
+export type SaveState = "saved" | "saving" | "error";

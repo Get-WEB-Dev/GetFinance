@@ -4,6 +4,8 @@ import { isStepSlug, type StepSlug } from "@/config/steps";
 import { applicantStoredSchema } from "@/lib/validation/applicant";
 import { addressFieldsSchema } from "@/lib/validation/address";
 import { employmentFieldsSchema } from "@/lib/validation/employment";
+import { loanDetailsFieldsSchema } from "@/lib/validation/loan-details";
+import { financesFieldsSchema } from "@/lib/validation/finances";
 
 const stepSlugSchema = z.custom<StepSlug>((v) => typeof v === "string" && isStepSlug(v));
 
@@ -19,4 +21,6 @@ export const draftSchema = z.object({
   updatedAt: z.string(),
   address: addressFieldsSchema.optional(),
   employment: employmentFieldsSchema.optional(),
+  loanDetails: loanDetailsFieldsSchema.optional(),
+  finances: financesFieldsSchema.optional(),
 });

@@ -11,6 +11,9 @@ export interface LoanProduct {
   maxAmount: number;
   minMonths: number;
   maxMonths: number;
+  illustrativeRate: number;
+ 
+  
 }
 
 export const loanProducts: LoanProduct[] = [
@@ -23,6 +26,7 @@ export const loanProducts: LoanProduct[] = [
     maxAmount: 1_000_000,
     minMonths: 6,
     maxMonths: 60,
+    illustrativeRate: 12.5, // personal
   },
   {
     type: "home",
@@ -33,6 +37,7 @@ export const loanProducts: LoanProduct[] = [
     maxAmount: 50_000_000,
     minMonths: 60,
     maxMonths: 360,
+    illustrativeRate: 8.75, // home
   },
   {
     type: "business",
@@ -43,6 +48,7 @@ export const loanProducts: LoanProduct[] = [
     maxAmount: 5_000_000,
     minMonths: 12,
     maxMonths: 84,
+    illustrativeRate: 14, // business
   },
 ];
 

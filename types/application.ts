@@ -3,6 +3,8 @@ import type { StepSlug } from "@/config/steps";
 import type { ApplicantFormValues } from "@/lib/validation/applicant";
 import type { AddressFormValues } from "@/lib/validation/address";
 import type { EmploymentFormValues } from "@/lib/validation/employment";
+import type { LoanDetailsFormValues } from "@/lib/validation/loan-details";
+import type { FinancesFormValues } from "@/lib/validation/finances";
 
 export interface ApplicationDraft {
   schemaVersion: 1;
@@ -16,6 +18,8 @@ export interface ApplicationDraft {
   updatedAt: string;
   address?: AddressFormValues;
   employment?: EmploymentFormValues;
+  loanDetails?: LoanDetailsFormValues;
+  finances?: FinancesFormValues;
 }
 
 export type SaveState = "saved" | "saving" | "error";

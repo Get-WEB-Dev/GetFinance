@@ -16,7 +16,14 @@ type LoadStatus = "loading" | "ready" | "missing";
 export type DraftPatch = Partial<
   Pick<
     ApplicationDraft,
-    "currentStep" | "loanType" | "completedSteps" | "applicant" | "address" | "employment"
+    | "currentStep"
+    | "loanType"
+    | "completedSteps"
+    | "applicant"
+    | "address"
+    | "employment"
+    | "loanDetails"
+    | "finances"
   >
 >;
 

@@ -13,10 +13,11 @@ interface RadioGroupFieldProps
   name: string;
   options: readonly RadioOption[];
   error?: string;
+  layoutClassName?: string;
 }
 
 export const RadioGroupField = forwardRef<HTMLInputElement, RadioGroupFieldProps>(
-  function RadioGroupField({ legend, name, options, error, ...inputProps }, ref) {
+ function RadioGroupField({ legend, name, options, error, layoutClassName = "md:grid-cols-3", ...inputProps }, ref) {
     const errorId = `field-${name}-error`;
 
     return (
@@ -28,7 +29,7 @@ export const RadioGroupField = forwardRef<HTMLInputElement, RadioGroupFieldProps
           </span>
         </legend>
 
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <div className={`mt-3 grid gap-3 ${layoutClassName}`}>
           {options.map((option, index) => (
             <label
               key={option.value}
@@ -63,6 +64,7 @@ export const RadioGroupField = forwardRef<HTMLInputElement, RadioGroupFieldProps
             </p>
           )}
         </div>
+        {/* <div className={`mt-3 grid gap-3 ${layoutClassName}`}></div> */}
       </fieldset>
     );
   },

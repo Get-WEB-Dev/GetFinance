@@ -1,6 +1,6 @@
-import { Briefcase, GraduationCap, User, type LucideIcon } from "lucide-react";
+import { Briefcase, House, User, type LucideIcon } from "lucide-react";
 
-export type LoanType = "personal" | "business" | "education";
+export type LoanType = "personal" | "home" | "business";
 
 export interface LoanProduct {
   type: LoanType;
@@ -17,31 +17,41 @@ export const loanProducts: LoanProduct[] = [
   {
     type: "personal",
     name: "Personal Loan",
-    summary: "For planned expenses such as home repairs, travel or consolidating debts.",
+    summary: "For planned expenses such as home repairs, travel, medical costs or consolidating debts.",
     icon: User,
-    minAmount: 500,
-    maxAmount: 10000,
+    minAmount: 50_000,
+    maxAmount: 1_000_000,
     minMonths: 6,
-    maxMonths: 48,
+    maxMonths: 60,
+  },
+  {
+    type: "home",
+    name: "Home Loan",
+    summary: "To buy a property or refinance an existing home loan.",
+    icon: House,
+    minAmount: 500_000,
+    maxAmount: 50_000_000,
+    minMonths: 60,
+    maxMonths: 360,
   },
   {
     type: "business",
     name: "Business Loan",
-    summary: "Working capital or equipment for a registered or sole-trader business.",
+    summary: "Working capital, equipment or expansion for a registered business.",
     icon: Briefcase,
-    minAmount: 2000,
-    maxAmount: 50000,
+    minAmount: 100_000,
+    maxAmount: 5_000_000,
     minMonths: 12,
-    maxMonths: 60,
-  },
-  {
-    type: "education",
-    name: "Education Loan",
-    summary: "Tuition and study costs for approved courses and institutions.",
-    icon: GraduationCap,
-    minAmount: 1000,
-    maxAmount: 25000,
-    minMonths: 12,
-    maxMonths: 72,
+    maxMonths: 84,
   },
 ];
+
+export function isLoanType(value: string): value is LoanType {
+  return loanProducts.some((product) => product.type === value);
+}
+
+export function getLoanProduct(type: LoanType): LoanProduct {
+  const product = loanProducts.find((p) => p.type === type);
+  if (!product) throw new Error(`Unknown loan type: ${type}`);
+  return product;
+}

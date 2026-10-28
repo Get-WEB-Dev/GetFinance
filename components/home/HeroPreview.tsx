@@ -1,4 +1,5 @@
 import { CheckCircle2, FileText, ShieldCheck } from "lucide-react";
+import { formatCurrency } from "@/lib/format/currency";
 
 export function HeroPreview() {
   return (
@@ -27,11 +28,11 @@ export function HeroPreview() {
       <dl className="mt-6 grid grid-cols-2 gap-4">
         <div className="rounded-lg bg-surface p-4">
           <dt className="text-xs text-slate-500">Requested amount</dt>
-          <dd className="mt-1 text-2xl font-semibold">$12,500</dd>
+        <dd className="mt-1 text-2xl font-semibold">{formatCurrency(500_000)}</dd>
         </div>
         <div className="rounded-lg bg-surface p-4">
           <dt className="text-xs text-slate-500">Est. monthly repayment</dt>
-          <dd className="mt-1 text-2xl font-semibold">$398</dd>
+         <dd className="mt-1 text-2xl font-semibold">{formatCurrency(10_624)}</dd>
         </div>
       </dl>
 

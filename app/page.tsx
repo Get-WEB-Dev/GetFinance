@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ButtonLink } from "@/components/ui/Button";
 import {
   ArrowRight,
   FileUp,
@@ -63,20 +64,14 @@ export default function HomePage() {
               an illustrative pre-approval summary. Your progress is saved at
               every step.
             </p>
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Link
-                href="/apply"
-                className={`inline-flex items-center gap-2 rounded-md bg-accent-600 px-6 py-3.5 font-semibold text-white hover:bg-accent-700 ${focusRing}`}
-              >
-                Apply now <ArrowRight aria-hidden className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/loans"
-                className={`inline-flex items-center rounded-md border border-white/30 px-6 py-3.5 font-semibold text-white hover:bg-white/10 ${focusRing}`}
-              >
-                Explore loans
-              </Link>
-            </div>
+       <div className="mt-10 flex flex-wrap gap-4">
+  <ButtonLink href="/apply" className="px-6 py-3.5">
+    Apply now <ArrowRight aria-hidden className="h-4 w-4" />
+  </ButtonLink>
+  <ButtonLink href="/loans" variant="outlineOnDark" className="px-6 py-3.5">
+    Explore loans
+  </ButtonLink>
+</div>
           </div>
           <HeroPreview />
         </div>
@@ -177,12 +172,9 @@ export default function HomePage() {
             <h2 className="text-2xl font-semibold text-navy-900">Ready to start?</h2>
             <p className="mt-1 text-slate-600">No account needed. Your progress saves as you go.</p>
           </div>
-          <Link
-            href="/apply"
-            className="inline-flex items-center gap-2 rounded-md bg-accent-600 px-6 py-3.5 font-semibold text-white hover:bg-accent-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600"
-          >
-            Start your application <ArrowRight aria-hidden className="h-4 w-4" />
-          </Link>
+      <ButtonLink href="/apply" className="px-6 py-3.5">
+  Start your application <ArrowRight aria-hidden className="h-4 w-4" />
+</ButtonLink>
         </div>
       </section>
     </>

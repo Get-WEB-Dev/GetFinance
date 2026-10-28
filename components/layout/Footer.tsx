@@ -4,11 +4,11 @@ import { brand } from "@/config/brand";
 const columns = [
   {
     title: "Loans",
-    links: [
-      { href: "/loans/personal", label: "Personal Loan" },
-      { href: "/loans/business", label: "Business Loan" },
-      { href: "/loans/education", label: "Education Loan" },
-    ],
+   links: [
+  { href: "/loans/personal", label: "Personal Loan" },
+  { href: "/loans/home", label: "Home Loan" },
+  { href: "/loans/business", label: "Business Loan" },
+],
   },
   {
     title: "Apply",

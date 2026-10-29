@@ -7,6 +7,8 @@ import { createFinancesSchema } from "@/lib/validation/finances";
 import { createLoanDetailsSchema } from "@/lib/validation/loan-details";
 import type { ApplicationDraft } from "@/types/application";
 import { verificationSchema } from "@/lib/validation/identity";
+import { documentCatalog } from "@/config/documents";
+import { getMissingDocuments } from "@/lib/documents/requirements";
 
 export interface StepIssue {
   field: string;
@@ -43,5 +45,15 @@ export function revalidateDraft(draft: ApplicationDraft): StepValidation[] {
     check("loan-details", createLoanDetailsSchema(draft.loanType), draft.loanDetails),
     check("finances", createFinancesSchema(draft.loanType), draft.finances),
     check("verification", verificationSchema, draft.verification),
+    checkDocuments(draft),
   ];
+}
+
+function checkDocuments(draft: ApplicationDraft): StepValidation {
+  const missing = getMissingDocuments(draft);
+  return {
+    slug: "documents",
+    valid: missing.length === 0,
+    issues: missing.map((id) => ({ field: id, message: `${documentCatalog[id].label} is missing.` })),
+  };
 }

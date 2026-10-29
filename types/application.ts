@@ -6,6 +6,7 @@ import type { EmploymentFormValues } from "@/lib/validation/employment";
 import type { LoanDetailsFormValues } from "@/lib/validation/loan-details";
 import type { FinancesFormValues } from "@/lib/validation/finances";
 import type { VerificationData } from "@/lib/validation/identity";
+import type  { DocumentsData   }  from "@/lib/validation/documents"
 
 export interface ApplicationDraft {
   schemaVersion: 1;
@@ -23,6 +24,7 @@ export interface ApplicationDraft {
   createdAt: string;
   updatedAt: string;
   verification?: VerificationData;
+  documents?: DocumentsData;
 }
 
 export type DraftPatch = Partial<
@@ -38,6 +40,7 @@ export type DraftPatch = Partial<
     | "loanDetails"
     | "finances"
     | "verification"
+    | "documents"
   >
 >;
 

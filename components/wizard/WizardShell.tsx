@@ -10,6 +10,7 @@ import { ChangeLoanTypeButton } from "./ChangeLoanTypeButton";
 import { ProgressIndicator } from "./ProgressIndicator";
 import { SaveStatus } from "./SaveStatus";
 import { useDraft } from "./DraftProvider";
+import { fileStore } from "@/lib/documents/file-store";
 
 export function WizardShell({
   applicationId,
@@ -54,10 +55,12 @@ export function WizardShell({
   const product = getLoanProduct(draft.loanType);
   const currentSlug = segment && isStepSlug(segment) ? segment : null;
 
-  async function handleDiscard() {
+    async function handleDiscard() {
+    fileStore.clearApplication(applicationId);
     await discard();
     router.push("/apply");
   }
+
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">

@@ -10,8 +10,9 @@ import {
   useState,
 } from "react";
 import { draftRepository } from "@/lib/persistence";
-import type { ApplicationDraft, DraftPatch, SaveState } from "@/types/application";
+import type { ApplicationDraft, DraftPatch, SaveState, DraftUpdate } from "@/types/application";
 import { reconcileDraft } from "@/lib/draft/reconcile";
+
 
 
 type LoadStatus = "loading" | "ready" | "missing";
@@ -21,7 +22,7 @@ interface DraftContextValue {
   status: LoadStatus;
   draft: ApplicationDraft | null;
   saveState: SaveState;
-  updateDraft: (patch: DraftPatch) => Promise<void>;
+  updateDraft: (update: DraftUpdate) => Promise<void>;
   discard: () => Promise<void>;
 }
 
@@ -61,10 +62,11 @@ export function DraftProvider({
     };
   }, [applicationId]);
 
-  const updateDraft = useCallback(async (patch: DraftPatch) => {
+    const updateDraft = useCallback(async (update: DraftUpdate) => {
     const current = draftRef.current;
     if (!current) return;
 
+    const patch = typeof update === "function" ? update(current) : update;
     const changed = (Object.keys(patch) as (keyof DraftPatch)[]).some(
       (key) => patch[key] !== current[key],
     );

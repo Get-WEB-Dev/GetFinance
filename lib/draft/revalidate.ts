@@ -6,6 +6,7 @@ import { createEmploymentSchema } from "@/lib/validation/employment";
 import { createFinancesSchema } from "@/lib/validation/finances";
 import { createLoanDetailsSchema } from "@/lib/validation/loan-details";
 import type { ApplicationDraft } from "@/types/application";
+import { verificationSchema } from "@/lib/validation/identity";
 
 export interface StepIssue {
   field: string;
@@ -41,5 +42,6 @@ export function revalidateDraft(draft: ApplicationDraft): StepValidation[] {
     check("employment", createEmploymentSchema(draft.loanType), draft.employment),
     check("loan-details", createLoanDetailsSchema(draft.loanType), draft.loanDetails),
     check("finances", createFinancesSchema(draft.loanType), draft.finances),
+    check("verification", verificationSchema, draft.verification),
   ];
 }

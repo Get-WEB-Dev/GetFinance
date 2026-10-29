@@ -16,6 +16,8 @@ import { addressRules } from "@/config/rules";
 import { getStepPath } from "@/config/steps";
 import { useAutosave } from "@/hooks/use-autosave";
 import { withCompletedStep } from "@/lib/draft/completion";
+import { AddressAutocomplete } from "@/components/apply/AddressAutocomplete";
+import type { AddressSuggestion } from "@/types/places";
 import {
   addressSchema,
   emptyAddress,
@@ -39,6 +41,8 @@ export function AddressForm() {
     register,
     handleSubmit,
     control,
+    setValue,
+    setFocus,
     formState: { errors, isSubmitting, submitCount },
   } = form;
 
@@ -49,6 +53,16 @@ export function AddressForm() {
     void updateDraft({ address: values });
   });
   useReviewOnMount(form, "address");
+
+  function applySuggestion(suggestion: AddressSuggestion) {
+    const options = { shouldValidate: true, shouldDirty: true, shouldTouch: true };
+    setValue("addressLine1", suggestion.addressLine1, options);
+    setValue("addressLine2", suggestion.addressLine2, options);
+    setValue("city", suggestion.city, options);
+    setValue("state", suggestion.state, options);
+    setValue("pincode", suggestion.pincode, options);
+    setFocus("addressLine1");
+  }
 
   async function onSubmit(values: AddressFormValues) {
     await updateDraft({
@@ -72,6 +86,10 @@ export function AddressForm() {
         </span>{" "}
         Required field
       </p>
+
+      <div className="mt-6">
+        <AddressAutocomplete onSelect={applySuggestion} />
+      </div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-2">
         <div className="md:col-span-2">

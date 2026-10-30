@@ -2,7 +2,8 @@ import { draftSchema } from "@/lib/validation/draft";
 import type { ApplicationDraft } from "@/types/application";
 import type { DraftRepository } from "./draft-repository";
 
-const keyFor = (id: string) => `getfinance:draft:${id}`;
+const KEY_PREFIX = "getfinance:draft:";
+const keyFor = (id: string) => `${KEY_PREFIX}${id}`;
 
 export class LocalStorageDraftRepository implements DraftRepository {
   async create(draft: ApplicationDraft): Promise<void> {
@@ -30,5 +31,16 @@ export class LocalStorageDraftRepository implements DraftRepository {
 
   async remove(id: string): Promise<void> {
     window.localStorage.removeItem(keyFor(id));
+  }
+
+    async findByReference(reference: string): Promise<ApplicationDraft | null> {
+    for (let index = 0; index < window.localStorage.length; index++) {
+      const key = window.localStorage.key(index);
+      if (!key || !key.startsWith(KEY_PREFIX)) continue;
+
+      const draft = await this.load(key.slice(KEY_PREFIX.length));
+      if (draft?.reference === reference) return draft;
+    }
+    return null;
   }
 }

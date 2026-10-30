@@ -15,7 +15,9 @@ const columns = [
     links: [
       { href: "/apply", label: "Start an application" },
       { href: "/resume", label: "Resume an application" },
+      
     ],
+    
   },
   {
     title: "Help",
@@ -38,12 +40,16 @@ export function Footer() {
           {columns.map((column) => (
             <nav key={column.title} aria-label={column.title}>
               <p className="text-sm font-semibold text-white">{column.title}</p>
+              
               <ul className="mt-4 space-y-2 text-sm">
                 {column.links.map((link) => (
                   <li key={link.href}>
                     <Link href={link.href} className="hover:text-white">
                       {link.label}
                     </Link>
+                                <Link href="/privacy" className="hover:text-white">Privacy</Link>
+            <Link href="/terms" className="hover:text-white">Terms</Link>
+            <Link href="/disclaimer" className="hover:text-white">Demo disclaimer</Link>
                   </li>
                 ))}
               </ul>

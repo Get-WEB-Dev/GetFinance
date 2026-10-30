@@ -1,27 +1,14 @@
-import { PreApprovalSummary } from "@/components/apply/PreApprovalSummary";
-import { ButtonLink } from "@/components/ui/Button";
+import { ReviewStep } from "@/components/apply/ReviewStep";
 import { StepLayout } from "@/components/wizard/StepLayout";
-import { getStepPath } from "@/config/steps";
 
-interface ReviewPageProps {
-  params: Promise<{ applicationId: string }>;
-}
-
-export default async function ReviewPage({ params }: ReviewPageProps) {
-  const { applicationId } = await params;
-
+export default function ReviewPage() {
   return (
     <StepLayout
       slug="review"
-      title="Review and pre-approval"
-      description="Check your pre-approval summary. In the next lesson we add the full review and submit."
+      title="Review and submit"
+      description="Check your pre-approval summary and your details, then submit your application."
     >
-      <PreApprovalSummary />
-      <div className="mt-8">
-        <ButtonLink href={getStepPath(applicationId, "signature")} variant="secondary">
-          Back
-        </ButtonLink>
-      </div>
+      <ReviewStep />
     </StepLayout>
   );
 }

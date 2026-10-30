@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DraftProvider } from "@/components/wizard/DraftProvider";
 import { WizardShell } from "@/components/wizard/WizardShell";
+import { SubmissionLock } from "@/components/wizard/SubmissionLock";
 
 export const metadata: Metadata = {
   title: "Your application",
@@ -18,6 +19,7 @@ export default async function ApplicationLayout({
 
   return (
     <DraftProvider applicationId={applicationId}>
+      <SubmissionLock applicationId={applicationId} />
       <WizardShell applicationId={applicationId}>{children}</WizardShell>
     </DraftProvider>
   );

@@ -9,6 +9,7 @@ import type { ApplicationDraft } from "@/types/application";
 import { verificationSchema } from "@/lib/validation/identity";
 import { documentCatalog } from "@/config/documents";
 import { getMissingDocuments } from "@/lib/documents/requirements";
+import { getDeclarationIssues } from "@/lib/declarations/check";
 
 export interface StepIssue {
   field: string;
@@ -56,4 +57,9 @@ function checkDocuments(draft: ApplicationDraft): StepValidation {
     valid: missing.length === 0,
     issues: missing.map((id) => ({ field: id, message: `${documentCatalog[id].label} is missing.` })),
   };
+}
+
+function checkDeclarations(draft: ApplicationDraft): StepValidation {
+  const issues = getDeclarationIssues(draft);
+  return { slug: "signature", valid: issues.length === 0, issues };
 }

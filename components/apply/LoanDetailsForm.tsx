@@ -39,6 +39,7 @@ export function LoanDetailsForm() {
   const form = useForm<LoanDetailsFormValues>({
     resolver: zodResolver(schema),
     mode: "onTouched",
+    shouldFocusError: false,
     defaultValues: draft.loanDetails ?? emptyLoanDetails,
   });
 

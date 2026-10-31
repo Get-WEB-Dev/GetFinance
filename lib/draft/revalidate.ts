@@ -37,6 +37,10 @@ function check(slug: StepSlug, schema: z.ZodType, value: unknown): StepValidatio
     })),
   };
 }
+function checkDeclarations(draft: ApplicationDraft): StepValidation {
+  const issues = getDeclarationIssues(draft);
+  return { slug: "signature", valid: issues.length === 0, issues };
+}
 
 export function revalidateDraft(draft: ApplicationDraft): StepValidation[] {
   return [
@@ -47,6 +51,7 @@ export function revalidateDraft(draft: ApplicationDraft): StepValidation[] {
     check("finances", createFinancesSchema(draft.loanType), draft.finances),
     check("verification", verificationSchema, draft.verification),
     checkDocuments(draft),
+    checkDeclarations(draft),
   ];
 }
 
@@ -59,7 +64,3 @@ function checkDocuments(draft: ApplicationDraft): StepValidation {
   };
 }
 
-function checkDeclarations(draft: ApplicationDraft): StepValidation {
-  const issues = getDeclarationIssues(draft);
-  return { slug: "signature", valid: issues.length === 0, issues };
-}

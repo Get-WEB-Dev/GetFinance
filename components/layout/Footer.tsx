@@ -47,15 +47,18 @@ export function Footer() {
                     <Link href={link.href} className="hover:text-white">
                       {link.label}
                     </Link>
-                                <Link href="/privacy" className="hover:text-white">Privacy</Link>
-            <Link href="/terms" className="hover:text-white">Terms</Link>
-            <Link href="/disclaimer" className="hover:text-white">Demo disclaimer</Link>
+                               
                   </li>
                 ))}
               </ul>
+              
             </nav>
           ))}
+          
         </div>
+         <Link href="/privacy" className="hover:text-white">Privacy</Link>
+            <Link href="/terms" className="hover:text-white">Terms</Link>
+            <Link href="/disclaimer" className="hover:text-white">Demo disclaimer</Link>
         <p className="mt-12 border-t border-white/15 pt-6 text-xs leading-relaxed text-slate-400">
           {brand.disclaimer}
         </p>

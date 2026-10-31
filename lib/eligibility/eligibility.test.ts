@@ -72,7 +72,7 @@ describe("which rules apply", () => {
 
 describe("overall decision", () => {
   it("is eligible when every rule passes", () => {
-    for (const input of [personal, home, business]) {
+      for (const input of [personal, { ...home, requestedAmount: 8_000_000 }, business]) {
       const result = evaluate(input);
       expect(result.rules.every((rule) => rule.outcome === "pass")).toBe(true);
       expect(result.decision).toBe("eligible");

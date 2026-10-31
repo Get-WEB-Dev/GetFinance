@@ -34,6 +34,7 @@ export function AddressForm() {
   const form = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
     mode: "onTouched",
+    shouldFocusError: false,
     defaultValues: draft.address ?? emptyAddress,
   });
 

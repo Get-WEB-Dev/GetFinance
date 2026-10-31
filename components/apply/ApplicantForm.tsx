@@ -26,6 +26,7 @@ export function ApplicantForm() {
   const form = useForm<ApplicantFormValues>({
     resolver: zodResolver(applicantSchema),
     mode: "onTouched",
+    shouldFocusError: false,
     defaultValues: draft.applicant ?? emptyApplicant,
   });
 

@@ -37,6 +37,7 @@ export function EmploymentForm() {
   const form = useForm<EmploymentFormValues>({
     resolver: zodResolver(schema),
     mode: "onTouched",
+    shouldFocusError: false,
     defaultValues: draft.employment ?? emptyEmployment,
   });
 

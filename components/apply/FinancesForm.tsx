@@ -34,6 +34,7 @@ export function FinancesForm() {
   const form = useForm<FinancesFormValues>({
     resolver: zodResolver(schema),
     mode: "onTouched",
+    shouldFocusError: false,
     defaultValues: draft.finances ?? emptyFinances,
   });
 

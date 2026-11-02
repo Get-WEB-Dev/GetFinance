@@ -329,6 +329,7 @@ export interface JourneyOptions {
   person?: Person;
   signature?: SignatureMethod;
   employment?: EmploymentKind;
+  onStep?: (step: JourneyStep, page: Page) => Promise<void>;
 }
 
 function buildContext(options: JourneyOptions): Context {
@@ -341,8 +342,14 @@ function buildContext(options: JourneyOptions): Context {
   };
 }
 
-async function completeAndAdvance(page: Page, step: JourneyStep, context: Context) {
+async function completeAndAdvance(
+  page: Page,
+  step: JourneyStep,
+  context: Context,
+  onStep?: JourneyOptions["onStep"],
+) {
   await handlers[step](page, context);
+  await onStep?.(step, page);
   const index = order.indexOf(step);
   const next = index + 1 < order.length ? order[index + 1] : "review";
   await saveAndContinue(page, new RegExp(`/${next}$`));
@@ -355,8 +362,8 @@ export async function reachStep(page: Page, target: JourneyStep | "review", opti
 
   const stop = target === "review" ? order.length : order.indexOf(target);
   for (let index = 0; index < stop; index++) {
-    await completeAndAdvance(page, order[index], context);
-  }
+  await completeAndAdvance(page, order[index], context, options.onStep);
+}
 }
 
 /**
@@ -373,7 +380,7 @@ export async function continueToReview(page: Page, options: JourneyOptions = {})
     const slug = new URL(page.url()).pathname.split("/").pop() ?? "";
     if (slug === "review") return;
     if (!isJourneyStep(slug)) throw new Error(`Can't continue from ${page.url()}`);
-    await completeAndAdvance(page, slug, context);
+    await completeAndAdvance(page, slug, context, options.onStep);
   }
   throw new Error("Did not reach the review step.");
 }

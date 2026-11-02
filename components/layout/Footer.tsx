@@ -56,9 +56,11 @@ export function Footer() {
           ))}
           
         </div>
-         <Link href="/privacy" className="hover:text-white">Privacy</Link>
-            <Link href="/terms" className="hover:text-white">Terms</Link>
-            <Link href="/disclaimer" className="hover:text-white">Demo disclaimer</Link>
+                <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <Link href="/privacy" className="hover:text-white">Privacy</Link>
+          <Link href="/terms" className="hover:text-white">Terms</Link>
+          <Link href="/disclaimer" className="hover:text-white">Demo disclaimer</Link>
+        </div>
         <p className="mt-12 border-t border-white/15 pt-6 text-xs leading-relaxed text-slate-400">
           {brand.disclaimer}
         </p>

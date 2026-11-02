@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { getLoanProduct } from "../config/loans";
 import {
-  chooseEmploymentStatus,
+ 
   chooseOption,
   fillField,
   loanRequest,
@@ -76,14 +76,11 @@ test.describe("Loan-specific validation", () => {
     await expect(page).toHaveURL(/\/loan-details$/);
   });
 
-  test("a business loan only accepts self-employed applicants", async ({ page }) => {
-    await reachStep(page, "employment", { loanType: "business" });
+  test("a business loan only offers the self-employed option", async ({ page }) => {
+   await reachStep(page, "employment", { loanType: "business" });
+   await waitForHydration(page);
 
-    await waitForHydration(page);
-    await chooseEmploymentStatus(page, "salaried");
-    await page.getByRole("button", { name: "Save and continue" }).click();
-
-    await expect(page.getByText(/applicants must be/).first()).toBeVisible();
-    await expect(page).toHaveURL(/\/employment$/);
-  });
+   await expect(page.getByRole("radio", { name: /^Self-employed/ })).toHaveCount(1);
+   await expect(page.getByRole("radio", { name: /^Salaried/ })).toHaveCount(0);
+});
 });

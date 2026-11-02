@@ -47,7 +47,33 @@ export async function waitForHydration(page: Page) {
 
 export async function saveAndContinue(page: Page, nextUrl: RegExp) {
   await page.getByRole("button", { name: "Save and continue" }).click();
-  await expect(page).toHaveURL(nextUrl);
+  try {
+    await expect(page).toHaveURL(nextUrl, { timeout: 5000 });
+    } catch (error) {
+    const messages = await page
+      .locator('[role="alert"], [id$="-error"], .text-red-700')
+      .allInnerTexts();
+
+    const stored = await page.evaluate(() => {
+      const key = Object.keys(localStorage).find((name) => name.startsWith("getfinance:draft:"));
+      if (!key) return null;
+      const draft = JSON.parse(localStorage.getItem(key) as string);
+      return {
+        loanType: draft.loanType,
+        completedSteps: draft.completedSteps,
+        stepsToReview: draft.stepsToReview,
+        loanDetails: draft.loanDetails,
+      };
+    });
+
+    throw new Error(
+      `Save did not move to ${nextUrl} (still on ${page.url()}).\nMessages:\n${messages
+        .map((text) => text.trim())
+        .filter((text) => text && text !== "*")
+        .join("\n")}\nSaved draft:\n${JSON.stringify(stored, null, 2)}`,
+      { cause: error },
+    );
+  }
 }
 
 export function applicationId(page: Page): string {
@@ -167,6 +193,7 @@ export async function completeLoanDetails(page: Page, { loanType }: Context) {
     await fillField(page, "Down payment", String(downPayment));
     await fillField(page, "Property city", "Pune");
     await chooseOption(page, "Property state or union territory", "Maharashtra");
+   
   }
 
   if (loanType === "business") {
@@ -332,9 +359,15 @@ export async function reachStep(page: Page, target: JourneyStep | "review", opti
   }
 }
 
-/** From whichever step the browser is on, completes each remaining step until the review page. */
+/**
+ * From whichever step the browser is on, completes each remaining step until the review page.
+ * It starts with a reload so the first form is built from the saved draft, exactly as when someone
+ * returns to an application, instead of from a page that was just redirected into place.
+ */
 export async function continueToReview(page: Page, options: JourneyOptions = {}) {
   const context = buildContext(options);
+
+  await page.reload();
 
   for (let attempts = 0; attempts <= order.length; attempts++) {
     const slug = new URL(page.url()).pathname.split("/").pop() ?? "";

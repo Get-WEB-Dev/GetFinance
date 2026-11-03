@@ -17,14 +17,14 @@ const focusRing =
 export function Header() {
   return (
     <>
-      <div className="bg-navy-900 text-xs text-slate-300">
+      {/* <div className="bg-navy-900 text-xs text-slate-300">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
           <p>Demonstration product. All figures are illustrative.</p>
           <Link href="/resume" className={`hidden rounded hover:text-white sm:inline ${focusRing}`}>
             Resume a saved application
           </Link>
         </div>
-      </div>
+      </div> */}
 
       <header className="sticky top-0 z-40 border-b border-white/10 bg-navy-950">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-3">

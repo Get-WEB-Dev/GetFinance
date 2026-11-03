@@ -39,8 +39,6 @@ const faqs = [
   { q: "What documents will I need?", a: "It depends on the loan type. The application lists them at the document step." },
 ];
 
-const focusRing =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400";
 
 export default function HomePage() {
   return (

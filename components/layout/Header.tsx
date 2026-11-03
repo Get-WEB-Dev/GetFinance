@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import { Menu } from "lucide-react";
@@ -11,52 +10,41 @@ const navLinks = [
   { href: "/resume", label: "Resume application" },
 ];
 
+// On the dark header the focus ring needs a light colour to stay clearly visible.
 const focusRing =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400";
 
 export function Header() {
   return (
     <>
       <div className="bg-navy-900 text-xs text-slate-300">
-  <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
-    <p>Demonstration product. All figures are illustrative.</p>
-    <Link href="/resume" className="hidden hover:text-white sm:inline">
-      Resume a saved application
-    </Link>
-  </div>
-</div>
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
+          <p>Demonstration product. All figures are illustrative.</p>
+          <Link href="/resume" className={`hidden rounded hover:text-white sm:inline ${focusRing}`}>
+            Resume a saved application
+          </Link>
+        </div>
+      </div>
 
-<header className="sticky top-0 z-40 border-b border-white/10 bg-navy-950">
-  <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-3">
-    <Link href="/" className={`rounded ${focusRing}`}>
-      <Image
-        src="/logo-light.png"
-        alt={`${brand.name} home`}
-        width={1571}
-        height={323}
-        priority
-        className="h-9 w-auto"
-      />
-    </Link>
-
-      {/* <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-4">
-          <Link
-            href="/"
-            className={`flex items-center gap-2 rounded text-xl font-semibold tracking-tight text-navy-900 ${focusRing}`}
-          >
-            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-navy-900">
-              <Landmark aria-hidden className="h-5 w-5 text-accent-400" />
-            </span>
-            {brand.name}
-          </Link> */}
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-navy-950">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-3">
+          <Link href="/" className={`rounded ${focusRing}`}>
+            <Image
+              src="/logo-light.png"
+              alt={`${brand.name} home`}
+              width={1571}
+              height={323}
+              priority
+              className="h-9 w-auto"
+            />
+          </Link>
 
           <nav aria-label="Main" className="hidden items-center gap-8 md:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium text-slate-700 hover:text-navy-900 ${focusRing}`}
+                className={`rounded text-sm font-medium text-slate-200 hover:text-white ${focusRing}`}
               >
                 {link.label}
               </Link>
@@ -73,7 +61,7 @@ export function Header() {
 
             <details className="relative md:hidden">
               <summary
-                className={`flex cursor-pointer list-none items-center rounded-md border border-line p-2 ${focusRing}`}
+                className={`flex cursor-pointer list-none items-center rounded-md border border-white/30 p-2 text-white ${focusRing}`}
               >
                 <Menu aria-hidden className="h-5 w-5" />
                 <span className="sr-only">Menu</span>

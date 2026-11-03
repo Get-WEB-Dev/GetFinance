@@ -12,8 +12,7 @@ export function ErrorSummary({ items, focusKey }: { items: ErrorSummaryItem[]; f
 
   useEffect(() => {
     if (focusKey > 0) containerRef.current?.focus();
-    // Focus only when a new submit attempt happens, not while the user is fixing fields.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [focusKey]);
 
   if (items.length === 0) return null;

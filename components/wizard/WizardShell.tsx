@@ -76,9 +76,11 @@ export function WizardShell({
         <div className="flex flex-wrap items-center gap-4">
           <SaveStatus state={saveState} />
           <ChangeLoanTypeButton />
-          <Button variant="secondary" onClick={() => setConfirmOpen(true)}>
-            Discard draft
-          </Button>
+                   {segment !== "submitted" && (
+            <Button variant="secondary" onClick={() => setConfirmOpen(true)}>
+              Discard draft
+            </Button>
+          )}
         </div>
       </div>
 

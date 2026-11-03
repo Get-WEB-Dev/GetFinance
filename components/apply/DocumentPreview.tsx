@@ -5,8 +5,11 @@ import { useEffect, useState } from "react";
 export function DocumentPreview({ blob, mimeType, fileName }: { blob: Blob; mimeType: string; fileName: string }) {
   const [url, setUrl] = useState<string | null>(null);
 
-  useEffect(() => {
+   useEffect(() => {
     const objectUrl = URL.createObjectURL(blob);
+    // The object URL is a browser resource that must be created and revoked with the component,
+    // so setting state here is deliberate synchronisation, not a derived value.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUrl(objectUrl);
     return () => URL.revokeObjectURL(objectUrl);
   }, [blob]);

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Check, Circle } from "lucide-react";
 import { loanProducts, getLoanProduct, type LoanType } from "@/config/loans";
 import { getStepPath } from "@/config/steps";
@@ -22,9 +22,9 @@ export function LoanSelectionForm({ initialType }: { initialType?: LoanType }) {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
+    control,
     register,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<LoanSelectionValues>({
     resolver: zodResolver(loanSelectionSchema),
@@ -32,7 +32,7 @@ export function LoanSelectionForm({ initialType }: { initialType?: LoanType }) {
     defaultValues: { loanType: initialType },
   });
 
-  const selectedType = watch("loanType");
+  const selectedType = useWatch({ control, name: "loanType" });
   const selectedProduct = selectedType ? getLoanProduct(selectedType) : null;
   const errorMessage = errors.loanType?.message;
 

@@ -116,7 +116,13 @@ export function IdentityCard({ kind, result, onVerified, onCleared }: IdentityCa
           </Button>
         </div>
       ) : (
-        <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="mt-4">
+               <form
+          onSubmit={(event) => {
+            void form.handleSubmit(onSubmit)(event);
+          }}
+          noValidate
+          className="mt-4"
+        >
           <TextField
             label={config.label}
             hint={config.hint}

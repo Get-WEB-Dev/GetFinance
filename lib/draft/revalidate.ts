@@ -47,7 +47,7 @@ export function revalidateDraft(draft: ApplicationDraft): StepValidation[] {
     check("applicant", applicantSchema, draft.applicant),
     check("address", addressSchema, draft.address),
     check("employment", createEmploymentSchema(draft.loanType), draft.employment),
-    check("loan-details", createLoanDetailsSchema(draft.loanType), draft.loanDetails),
+    check("loan-details", createLoanDetailsSchema(draft.loanType, draft.country), draft.loanDetails),
     check("finances", createFinancesSchema(draft.loanType), draft.finances),
     check("verification", verificationSchema, draft.verification),
     checkDocuments(draft),

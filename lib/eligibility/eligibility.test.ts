@@ -5,6 +5,7 @@ import { evaluateEligibility } from "./evaluate";
 import type { EligibilityInput } from "./types";
 
 const personal: EligibilityInput = {
+  country: "ET",
   loanType: "personal",
   age: 30,
   monthlyIncome: 80_000,
@@ -20,6 +21,7 @@ const personal: EligibilityInput = {
 };
 
 const home: EligibilityInput = {
+  country: "ET",
   loanType: "home",
   age: 35,
   monthlyIncome: 300_000,
@@ -35,6 +37,7 @@ const home: EligibilityInput = {
 };
 
 const business: EligibilityInput = {
+  country: "ET",
   loanType: "business",
   age: 40,
   monthlyIncome: 150_000,

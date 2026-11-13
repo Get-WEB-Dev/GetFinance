@@ -1,16 +1,19 @@
 import { getLoanProduct, type LoanType } from "@/config/loans";
 import { calculateRepayment } from "@/lib/calculations/repayment";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency as formatMoney } from "@/lib/format/currency";
 import { isWholeNumber, parseAmount } from "@/lib/validation/helpers";
+import type { CountryCode } from "@/config/countries";
 
 interface RepaymentEstimateCardProps {
+  country: CountryCode;
   loanType: LoanType;
   amount: string;
   months: string;
 }
 
-export function RepaymentEstimateCard({ loanType, amount, months }: RepaymentEstimateCardProps) {
-  const product = getLoanProduct(loanType);
+export function RepaymentEstimateCard({ loanType, country, amount, months }: RepaymentEstimateCardProps) {
+  const formatCurrency = (value: number) => formatMoney(value, country);
+  const product = getLoanProduct(loanType, country);
   const principal = parseAmount(amount);
   const term = isWholeNumber(months, product.minMonths, product.maxMonths) ? Number(months) : null;
 

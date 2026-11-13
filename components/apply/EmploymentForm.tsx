@@ -126,7 +126,7 @@ export function EmploymentForm() {
             startAdornment={locale.currencySymbol}
             inputMode="numeric"
             maxLength={9}
-            hint="Before tax, in rupees. Digits only."
+            hint="Before tax. Digits only."
             error={errors.monthlyIncome?.message}
             {...register("monthlyIncome")}
           />

@@ -74,6 +74,7 @@ export function makeDraft(overrides: Partial<ApplicationDraft> = {}): Applicatio
     schemaVersion: 1,
     id: "test-id",
     reference: "GF-TEST0001",
+    country: "ET",
     loanType: "personal",
     currentStep: "finances",
     completedSteps: ["loan-selection", "applicant", "address", "employment", "loan-details", "finances"],

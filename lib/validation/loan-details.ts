@@ -2,12 +2,13 @@ import { z } from "zod";
 import { isIndianState } from "@/config/india-states";
 import { getLoanProduct, type LoanType } from "@/config/loans";
 import { businessTypeOptions, industryOptions, isLoanPurpose, isOptionValue } from "@/config/options";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency as formatMoney } from "@/lib/format/currency";
 import { formatTerm } from "@/lib/format/term";
+import { DEFAULT_COUNTRY, type CountryCode } from "@/config/countries";
 import { isWholeNumber, parseAmount } from "@/lib/validation/helpers";
 
 const REGISTRATION_PATTERN = /^[A-Za-z0-9\-/]{6,25}$/;
-const AMOUNT_MESSAGE = "Enter an amount in rupees, using digits only.";
+const AMOUNT_MESSAGE = "Enter an amount using digits only.";
 
 export const loanDetailsFieldsSchema = z.object({
   loanAmount: z.string(),
@@ -43,8 +44,9 @@ export const emptyLoanDetails: LoanDetailsFormValues = {
   annualRevenue: "",
 };
 
-export function createLoanDetailsSchema(loanType: LoanType) {
-  const product = getLoanProduct(loanType);
+export function createLoanDetailsSchema(loanType: LoanType, country: CountryCode = DEFAULT_COUNTRY) {
+  const product = getLoanProduct(loanType, country);
+  const formatCurrency = (amount: number) => formatMoney(amount, country);
 
   return loanDetailsFieldsSchema.superRefine((v, ctx) => {
     const fail = (path: keyof LoanDetailsFormValues, message: string) =>

@@ -2,8 +2,10 @@ import type { LoanType } from "@/config/loans";
 
 export type RuleOutcome = "pass" | "refer" | "fail";
 export type Decision = "eligible" | "review" | "not-eligible";
+import type { CountryCode } from "@/config/countries";
 
 export interface EligibilityInput {
+  country: CountryCode;
   loanType: LoanType;
   age: number;
   monthlyIncome: number;

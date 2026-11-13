@@ -10,6 +10,7 @@ import { verificationStoredSchema } from "@/lib/validation/identity";
 import { documentsStoredSchema } from "@/lib/validation/documents";
 import { declarationsStoredSchema } from "./declarations";
 import { submissionRecordSchema } from "./submission";
+import { DEFAULT_COUNTRY, isCountryCode, type CountryCode } from "@/config/countries";
 
 const stepSlugSchema = z.custom<StepSlug>((v) => typeof v === "string" && isStepSlug(v));
 
@@ -17,6 +18,7 @@ export const draftSchema = z.object({
   schemaVersion: z.literal(1),
   id: z.string().min(1),
   reference: z.string().min(1),
+  country: z.custom<CountryCode>((v) => typeof v === "string" && isCountryCode(v)).default(DEFAULT_COUNTRY),
   loanType: z.custom<LoanType>((v) => typeof v === "string" && isLoanType(v)),
   currentStep: stepSlugSchema,
   completedSteps: z.array(stepSlugSchema).default(["loan-selection"]),

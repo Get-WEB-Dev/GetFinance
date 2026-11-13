@@ -33,6 +33,7 @@ export function buildEligibilityInput(draft: ApplicationDraft, today: Date = new
         : null;
 
   return {
+    country: draft.country,
     loanType: draft.loanType,
     age: calculateAge(birth, today),
     monthlyIncome: income,
@@ -40,7 +41,7 @@ export function buildEligibilityInput(draft: ApplicationDraft, today: Date = new
     existingEmi,
     requestedAmount: loan.amount,
     termMonths: loan.months,
-    annualRatePercent: getLoanProduct(draft.loanType).illustrativeRate,
+    annualRatePercent: getLoanProduct(draft.loanType, draft.country).illustrativeRate,
     employmentStatus: status,
     yearsInCurrentWork,
     propertyValue: parseAmount(loanDetails?.propertyValue ?? ""),

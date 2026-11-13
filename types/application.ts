@@ -9,6 +9,7 @@ import type { VerificationData } from "@/lib/validation/identity";
 import type  { DocumentsData   }  from "@/lib/validation/documents"
 import type { DeclarationsData } from "@/lib/validation/declarations";
 import type { SubmissionRecord } from "@/lib/validation/submission";
+import type { CountryCode } from "@/config/countries";
 
 export interface ApplicationDraft {
   schemaVersion: 1;
@@ -29,6 +30,7 @@ export interface ApplicationDraft {
   documents?: DocumentsData;
   declarations?: DeclarationsData;
   submission?: SubmissionRecord;
+  country: CountryCode;
 }
 
 export type DraftPatch = Partial<

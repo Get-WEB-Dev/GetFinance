@@ -1,10 +1,10 @@
-import { eligibilityPolicies, type EligibilityPolicy } from "@/config/eligibility";
+import { getEligibilityPolicy, type EligibilityPolicy } from "@/config/eligibility";
 import { getLoanProduct } from "@/config/loans";
 import { applicantRules } from "@/config/rules";
 import { calculateAffordability } from "@/lib/calculations/affordability";
 import { maxPrincipalForEmi } from "@/lib/calculations/offer";
 import { calculateRepayment } from "@/lib/calculations/repayment";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency as formatMoney } from "@/lib/format/currency";
 import { formatPercent } from "@/lib/format/percent";
 import type { Decision, EligibilityInput, EligibilityResult, RuleOutcome, RuleResult } from "./types";
 
@@ -24,7 +24,7 @@ function atLeast(value: number, limit: number, referLimit = limit): RuleOutcome 
 }
 
 function computeMaxAmount(input: EligibilityInput, policy: EligibilityPolicy): number | null {
-  const product = getLoanProduct(input.loanType);
+  const product = getLoanProduct(input.loanType, input.country);
 
   const emiByFoir = policy.maxFoir * input.monthlyIncome - input.existingEmi;
   const emiByDisposable =
@@ -48,7 +48,8 @@ function computeMaxAmount(input: EligibilityInput, policy: EligibilityPolicy): n
  * Returns null when the inputs can't be evaluated (for example a missing property value on a home loan).
  */
 export function evaluateEligibility(input: EligibilityInput): EligibilityResult | null {
-  const policy = eligibilityPolicies[input.loanType];
+  const policy = getEligibilityPolicy(input.loanType, input.country);
+  const formatCurrency = (amount: number) => formatMoney(amount, input.country);
 
   const repayment = calculateRepayment(input.requestedAmount, input.annualRatePercent, input.termMonths);
   if (!repayment) return null;

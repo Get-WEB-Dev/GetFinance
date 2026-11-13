@@ -76,7 +76,7 @@ export function createEmploymentSchema(loanType: LoanType) {
 
     const amount = parseAmount(income);
     if (amount === null || amount <= 0) {
-      fail("monthlyIncome", "Enter your monthly income in rupees, using digits only.");
+      fail("monthlyIncome", "Enter your monthly income using digits only.");
     }
   });
 }

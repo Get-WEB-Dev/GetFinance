@@ -3,7 +3,7 @@ import type { LoanType } from "@/config/loans";
 import { isOptionValue, yesNoOptions } from "@/config/options";
 import { isWholeNumber, parseAmount } from "@/lib/validation/helpers";
 
-const AMOUNT_MESSAGE = "Enter an amount in rupees, using digits only.";
+const AMOUNT_MESSAGE = "Enter an amount using digits only.";
 
 export const financesFieldsSchema = z.object({
   monthlyExpenses: z.string(),

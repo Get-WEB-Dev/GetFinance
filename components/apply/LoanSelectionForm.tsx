@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { Check, Circle } from "lucide-react";
-import { loanProducts, getLoanProduct, type LoanType } from "@/config/loans";
+import { getLoanProduct, getLoanProducts, type LoanType } from "@/config/loans";
+import { DEFAULT_COUNTRY, countries, countryCodes } from "@/config/countries";
 import { getStepPath } from "@/config/steps";
 import { createDraft } from "@/lib/draft/create-draft";
 import { formatCurrency } from "@/lib/format/currency";
@@ -29,12 +30,17 @@ export function LoanSelectionForm({ initialType }: { initialType?: LoanType }) {
   } = useForm<LoanSelectionValues>({
     resolver: zodResolver(loanSelectionSchema),
     mode: "onChange",
-    defaultValues: { loanType: initialType },
+    defaultValues: { country: DEFAULT_COUNTRY, loanType: initialType },
   });
 
+
+ 
   const selectedType = useWatch({ control, name: "loanType" });
-  const selectedProduct = selectedType ? getLoanProduct(selectedType) : null;
+  const selectedCountry = useWatch({ control, name: "country" }) ?? DEFAULT_COUNTRY;
+  const products = getLoanProducts(selectedCountry);
+  const selectedProduct = selectedType ? getLoanProduct(selectedType, selectedCountry) : null;
   const errorMessage = errors.loanType?.message;
+  // const draft = createDraft(values.loanType, values.country);
 
   async function onSubmit(values: LoanSelectionValues) {
     setSubmitError(null);
@@ -49,11 +55,25 @@ export function LoanSelectionForm({ initialType }: { initialType?: LoanType }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
-      <fieldset aria-describedby={errorMessage ? "loan-type-error" : undefined}>
+            <fieldset>
+        <legend className="text-lg font-semibold text-navy-900">Where do you live?</legend>
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          {countryCodes.map((code) => (
+            <label key={code} className="block cursor-pointer">
+              <input type="radio" value={code} className="peer sr-only" {...register("country")} />
+              <span className="flex items-center gap-3 rounded-lg border border-line bg-white p-4 transition-colors hover:border-navy-800 peer-checked:border-accent-600 peer-checked:ring-2 peer-checked:ring-accent-600 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent-600">
+                <span aria-hidden className="text-2xl">{countries[code].flag}</span>
+                <span className="font-semibold text-navy-900">{countries[code].name}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset aria-describedby={errorMessage ? "loan-type-error" : undefined} className="mt-10">
         <legend className="text-lg font-semibold text-navy-900">Choose a loan type</legend>
 
         <div className="mt-4 grid gap-4 md:grid-cols-3">
-          {loanProducts.map((product) => {
+          {products.map((product) => {
             const Icon = product.icon;
             const isSelected = selectedType === product.type;
 
@@ -100,8 +120,8 @@ export function LoanSelectionForm({ initialType }: { initialType?: LoanType }) {
             <p className="font-semibold text-navy-900">{selectedProduct.name}</p>
             <p className="mt-1 text-sm text-slate-600">{selectedProduct.summary}</p>
             <p className="mt-3 text-sm text-slate-700">
-              Illustrative range: {formatCurrency(selectedProduct.minAmount)} to{" "}
-              {formatCurrency(selectedProduct.maxAmount)}, over{" "}
+              Illustrative range: {formatCurrency(selectedProduct.minAmount, selectedCountry)} to{" "}
+              {formatCurrency(selectedProduct.maxAmount, selectedCountry)}, over{" "}
               {formatTerm(selectedProduct.minMonths)} to {formatTerm(selectedProduct.maxMonths)}.
             </p>
             <p className="mt-2 text-xs text-slate-500">

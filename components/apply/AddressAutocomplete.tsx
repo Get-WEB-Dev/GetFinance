@@ -4,16 +4,19 @@ import { useEffect, useId, useState } from "react";
 import { placesService } from "@/lib/services";
 import { PLACES_MIN_QUERY_LENGTH } from "@/lib/simulation/places";
 import type { AddressSuggestion } from "@/types/places";
+import type { CountryCode } from "@/config/countries";
+import { getCountryProfile } from "@/config/country-profiles";
 
 type Status = "idle" | "loading" | "results" | "empty" | "error";
 
 const DEBOUNCE_MS = 300;
 
-export function AddressAutocomplete({ onSelect }: { onSelect: (suggestion: AddressSuggestion) => void }) {
+export function AddressAutocomplete({ country, onSelect }: { country: CountryCode; onSelect: (suggestion: AddressSuggestion) => void }) {
   const inputId = useId();
   const listId = `${inputId}-list`;
   const hintId = `${inputId}-hint`;
   const statusId = `${inputId}-status`;
+  const examples = getCountryProfile(country).address.searchExamples.map((example) => `“${example}”`).join(", ");
 
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<Status>("idle");
@@ -32,7 +35,7 @@ export function AddressAutocomplete({ onSelect }: { onSelect: (suggestion: Addre
 
     const controller = new AbortController();
     const timer = setTimeout(async () => {
-      const outcome = await placesService.search(trimmed, controller.signal);
+      const outcome = await placesService.search(trimmed, country, controller.signal)
       if (controller.signal.aborted) return;
 
       if (outcome.status === "error") {
@@ -49,7 +52,7 @@ export function AddressAutocomplete({ onSelect }: { onSelect: (suggestion: Addre
       clearTimeout(timer);
       controller.abort();
     };
-  }, [query]);
+  }, [query, country]);
 
   function handleChange(value: string) {
     setQuery(value);
@@ -112,8 +115,7 @@ export function AddressAutocomplete({ onSelect }: { onSelect: (suggestion: Addre
         Find your address <span className="font-normal text-slate-500">(optional)</span>
       </label>
       <p id={hintId} className="mt-1 text-sm text-slate-500">
-        Simulated address search with demo data only. Try &ldquo;Pune&rdquo;, &ldquo;MG Road&rdquo; or
-        &ldquo;Bengaluru&rdquo;. You can always type your address below instead.
+                Simulated address search with demo data only. Try {examples}. You can always type your address below instead.
       </p>
 
       <div className="relative">

@@ -52,7 +52,7 @@ test.describe("Keyboard use", () => {
 
     const search = page.getByRole("combobox", { name: /^Find your address/ });
     await search.focus();
-    await search.fill("MG Road");
+    await search.fill("Bole");
 
     await expect(page.getByRole("option").first()).toBeVisible();
     await expect(search).toHaveAttribute("aria-expanded", "true");
@@ -62,7 +62,7 @@ test.describe("Keyboard use", () => {
     await page.keyboard.press("Enter");
 
     await expect(byLabel(page, "City or town")).not.toHaveValue("");
-    await expect(byLabel(page, "PIN code")).not.toHaveValue("");
+    await expect(byLabel(page, "P.O. Box")).not.toHaveValue("");
     await expect(page.getByText(/filled from your selection/)).toBeVisible();
   });
 

@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useMemo } from "react";
+import { getCountryProfile } from "@/config/country-profiles";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { Button, ButtonLink } from "@/components/ui/Button";
@@ -10,7 +12,6 @@ import { TextAreaField } from "@/components/ui/TextAreaField";
 import { TextField } from "@/components/ui/TextField";
 import { useReadyDraft } from "@/components/wizard/DraftProvider";
 import { StepActions } from "@/components/wizard/StepLayout";
-import { stateOptions } from "@/config/india-states";
 import { residenceTypeOptions } from "@/config/options";
 import { addressRules } from "@/config/rules";
 import { getStepPath } from "@/config/steps";
@@ -19,8 +20,8 @@ import { withCompletedStep } from "@/lib/draft/completion";
 import { AddressAutocomplete } from "@/components/apply/AddressAutocomplete";
 import type { AddressSuggestion } from "@/types/places";
 import {
-  addressSchema,
-  emptyAddress,
+  createAddressSchema,
+  createEmptyAddress,
   needsPreviousAddress,
   sanitizeAddress,
   type AddressFormValues,
@@ -30,12 +31,14 @@ import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 export function AddressForm() {
   const router = useRouter();
   const { draft, updateDraft } = useReadyDraft();
+  const profile = getCountryProfile(draft.country).address;
+  const schema = useMemo(() => createAddressSchema(draft.country), [draft.country]);
 
   const form = useForm<AddressFormValues>({
-    resolver: zodResolver(addressSchema),
+    resolver: zodResolver(schema),
     mode: "onTouched",
     shouldFocusError: false,
-    defaultValues: draft.address ?? emptyAddress,
+    defaultValues: draft.address ?? createEmptyAddress(draft.country),
   });
 
   const {
@@ -89,7 +92,7 @@ export function AddressForm() {
       </p>
 
       <div className="mt-6">
-        <AddressAutocomplete onSelect={applySuggestion} />
+        <AddressAutocomplete country={draft.country} onSelect={applySuggestion} />
       </div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-2">
@@ -97,7 +100,7 @@ export function AddressForm() {
           <TextField
             label="Address line 1"
             autoComplete="address-line1"
-            hint="House or flat number and street."
+            hint={profile.line1Hint}
             error={errors.addressLine1?.message}
             {...register("addressLine1")}
           />
@@ -107,7 +110,7 @@ export function AddressForm() {
             label="Address line 2"
             optional
             autoComplete="address-line2"
-            hint="Area, landmark or locality."
+            hint={profile.line2Hint}
             error={errors.addressLine2?.message}
             {...register("addressLine2")}
           />
@@ -120,16 +123,16 @@ export function AddressForm() {
           {...register("city")}
         />
         <SelectField
-          label="State or union territory"
-          options={stateOptions}
+          label={profile.regionLabel}
+          options={profile.regions}
           autoComplete="address-level1"
           error={errors.state?.message}
           {...register("state")}
         />
         <TextField
-          label="PIN code"
-          inputMode="numeric"
-          maxLength={6}
+          label={profile.postalLabel}
+          optional={!profile.postalRequired}
+          maxLength={profile.postalMaxLength}
           autoComplete="postal-code"
           error={errors.pincode?.message}
           {...register("pincode")}

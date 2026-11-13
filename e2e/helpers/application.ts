@@ -15,7 +15,7 @@ export const person: Person = {
   fullName: "Asha Rao",
   dateOfBirth: "1990-05-17",
   email: "asha.rao@example.com",
-  mobile: "9876543210",
+  mobile: "911234567",
 };
 
 export const panLabel = "PAN (Permanent Account Number)";
@@ -130,11 +130,10 @@ export async function completeApplicant(page: Page, { person: who }: Context) {
 }
 
 export async function completeAddress(page: Page) {
-  await waitForHydration(page);
-  await fillField(page, "Address line 1", "12 MG Road");
-  await fillField(page, "City or town", "Bengaluru");
-  await chooseOption(page, "State or union territory", "Karnataka");
-  await fillField(page, "PIN code", "560001");
+    await waitForHydration(page);
+  await fillField(page, "Address line 1", "Bole Sub-city, Woreda 03, House 1204");
+  await fillField(page, "City or town", "Addis Ababa");
+  await chooseOption(page, "Region", "Addis Ababa");
   await chooseOption(page, "Residence type", "Rented");
   await fillField(page, "Years at this address", "5");
 }
@@ -191,8 +190,8 @@ export async function completeLoanDetails(page: Page, { loanType }: Context) {
     await chooseOption(page, "Purpose of the loan", "Purchase a property");
     await fillField(page, "Property value", String(propertyValue));
     await fillField(page, "Down payment", String(downPayment));
-    await fillField(page, "Property city", "Pune");
-    await chooseOption(page, "Property state or union territory", "Maharashtra");
+    await fillField(page, "Property city", "Addis Ababa");
+    await chooseOption(page, "Property state or union territory", "Addis Ababa");
    
   }
 

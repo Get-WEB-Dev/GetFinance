@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { isIndianState } from "@/config/india-states";
 import { getLoanProduct, type LoanType } from "@/config/loans";
 import { businessTypeOptions, industryOptions, isLoanPurpose, isOptionValue } from "@/config/options";
 import { formatCurrency as formatMoney } from "@/lib/format/currency";
 import { formatTerm } from "@/lib/format/term";
 import { DEFAULT_COUNTRY, type CountryCode } from "@/config/countries";
 import { isWholeNumber, parseAmount } from "@/lib/validation/helpers";
+import { getCountryProfile, isRegion } from "@/config/country-profiles";
 
 const REGISTRATION_PATTERN = /^[A-Za-z0-9\-/]{6,25}$/;
 const AMOUNT_MESSAGE = "Enter an amount using digits only.";
@@ -79,7 +79,9 @@ export function createLoanDetailsSchema(loanType: LoanType, country: CountryCode
       const propertyValue = parseAmount(v.propertyValue);
       if (propertyValue === null || propertyValue <= 0) fail("propertyValue", AMOUNT_MESSAGE);
       if (v.propertyCity.trim().length < 2) fail("propertyCity", "Enter the city where the property is located.");
-      if (!isIndianState(v.propertyState)) fail("propertyState", "Select the property's state or union territory.");
+      if (!isRegion(country, v.propertyState)) {
+        fail("propertyState", `Select the property's ${getCountryProfile(country).address.regionLabel.toLowerCase()} from the list.`);
+      }
 
       const down = v.purpose === "purchase" ? parseAmount(v.downPayment) : 0;
       if (v.purpose === "purchase" && down === null) {

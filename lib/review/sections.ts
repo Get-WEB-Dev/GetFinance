@@ -1,5 +1,6 @@
 import { documentCatalog } from "@/config/documents";
 import { getLoanProduct } from "@/config/loans";
+import type { CountryCode } from "@/config/countries";
 import {
   businessTypeOptions,
   employmentStatusOptions,
@@ -38,9 +39,9 @@ function labelFor(options: readonly Option[], value: string): string {
   return options.find((option) => option.value === value)?.label ?? humanise(value);
 }
 
-function money(value: string): string {
+function moneyFor(value: string, country: CountryCode): string {
   const amount = parseAmount(value);
-  return amount === null ? value : formatCurrency(amount);
+  return amount === null ? value : formatCurrency(amount, country);
 }
 
 function years(value: string): string {
@@ -55,6 +56,7 @@ function rows(...candidates: [label: string, value: string | undefined][]): Revi
 }
 
 export function buildReviewSections(draft: ApplicationDraft): ReviewSection[] {
+  const money = (value: string) => moneyFor(value, draft.country);
   const sections: ReviewSection[] = [];
   const add = (slug: StepSlug, sectionRows: ReviewRow[]) => {
     if (sectionRows.length > 0) sections.push({ slug, title: getStepLabel(slug), rows: sectionRows });

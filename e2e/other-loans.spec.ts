@@ -68,8 +68,8 @@ test.describe("Loan-specific validation", () => {
     await chooseOption(page, "Purpose of the loan", "Purchase a property");
     await fillField(page, "Property value", String(amount - 1));
     await fillField(page, "Down payment", "0");
-    await fillField(page, "Property city", "Pune");
-    await chooseOption(page, "Property state or union territory", "Maharashtra");
+    await fillField(page, "Property city", "Addis Ababa");
+    await chooseOption(page, "Property state or union territory", "Addis Ababa");
     await page.getByRole("button", { name: "Save and continue" }).click();
 
     await expect(page.getByText(/exceed the property value/).first()).toBeVisible();

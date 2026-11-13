@@ -5,17 +5,17 @@ export const validApplicant = {
   fullName: "Asha Rao",
   dateOfBirth: "1990-05-20",
   email: "asha@example.com",
-  mobile: "9876543210",
+  mobile: "911234567",
   alternateMobile: "",
 };
 
 export const validAddress = {
-  addressLine1: "12 Test Street",
+  addressLine1: "Bole Sub-city, Woreda 03, House 1204",
   addressLine2: "",
-  city: "Pune",
-  state: "Maharashtra",
-  pincode: "411001",
-  country: "India",
+  city: "Addis Ababa",
+  state: "Addis Ababa",
+  pincode: "1000",
+  country: "Ethiopia",
   residenceType: "rented",
   yearsAtAddress: "5",
   previousAddress: "",
@@ -56,8 +56,8 @@ export const validHomeLoanDetails = {
   purpose: "purchase",
   propertyValue: "5000000",
   downPayment: "500000",
-  propertyCity: "Pune",
-  propertyState: "Maharashtra",
+  propertyCity: "Addis Ababa",
+  propertyState: "Addis Ababa",
 };
 
 export const validFinances = {

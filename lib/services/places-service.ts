@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { PlacesOutcome } from "@/types/places";
+import type { CountryCode } from "@/config/countries";
 
 export interface PlacesService {
-  search(query: string, signal?: AbortSignal): Promise<PlacesOutcome>;
+  search(query: string, country: CountryCode, signal?: AbortSignal): Promise<PlacesOutcome>;
 }
 
 const suggestionSchema = z.object({
@@ -32,9 +33,12 @@ export class HttpPlacesService implements PlacesService {
     this.endpoint = endpoint;
   }
 
-  async search(query: string, signal?: AbortSignal): Promise<PlacesOutcome> {
+  async search(query: string, country: CountryCode, signal?: AbortSignal): Promise<PlacesOutcome> {
     try {
-      const response = await fetch(`${this.endpoint}?q=${encodeURIComponent(query)}`, { signal });
+        const response = await fetch(
+        `${this.endpoint}?q=${encodeURIComponent(query)}&country=${encodeURIComponent(country)}`,
+        { signal },
+      );
       const parsed = outcomeSchema.safeParse(await response.json());
       return parsed.success ? parsed.data : UNAVAILABLE;
     } catch {

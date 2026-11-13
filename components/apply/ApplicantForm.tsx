@@ -12,8 +12,10 @@ import { applicantRules } from "@/config/rules";
 import { getStepPath } from "@/config/steps";
 import { useAutosave } from "@/hooks/use-autosave";
 import { withCompletedStep } from "@/lib/draft/completion";
+import { useMemo } from "react";
+import { getCountryProfile } from "@/config/country-profiles";
 import {
-  applicantSchema,
+  createApplicantSchema,
   emptyApplicant,
   type ApplicantFormValues,
 } from "@/lib/validation/applicant";
@@ -22,9 +24,11 @@ import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 export function ApplicantForm() {
   const router = useRouter();
   const { draft, updateDraft } = useReadyDraft();
+  const phone = getCountryProfile(draft.country).phone;
+  const schema = useMemo(() => createApplicantSchema(draft.country), [draft.country]);
 
   const form = useForm<ApplicantFormValues>({
-    resolver: zodResolver(applicantSchema),
+   resolver: zodResolver(schema),
     mode: "onTouched",
     shouldFocusError: false,
     defaultValues: draft.applicant ?? emptyApplicant,
@@ -99,10 +103,10 @@ export function ApplicantForm() {
         <TextField
           label="Mobile number"
           type="tel"
-          inputMode="numeric"
-          maxLength={10}
+          inputMode="tel"
+          maxLength={phone.maxLength}
           autoComplete="tel-national"
-          hint="10 digits, without +91."
+          hint={phone.hint}
           error={errors.mobile?.message}
           {...register("mobile")}
         />
@@ -111,8 +115,8 @@ export function ApplicantForm() {
           label="Alternate mobile number"
           optional
           type="tel"
-          inputMode="numeric"
-          maxLength={10}
+          inputMode="tel"
+          maxLength={phone.maxLength}
           autoComplete="off"
           error={errors.alternateMobile?.message}
           {...register("alternateMobile")}

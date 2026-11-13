@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { errorsFor, validApplicant } from "@/test/fixtures";
-import { applicantSchema } from "./applicant";
+import { applicantSchema, createApplicantSchema } from "./applicant";
 
 describe("applicantSchema", () => {
   beforeEach(() => {
@@ -30,8 +30,17 @@ describe("applicantSchema", () => {
     expect(errorsFor(applicantSchema, { ...validApplicant, dateOfBirth: "1990-02-31" }).dateOfBirth).toBeDefined();
   });
 
-  it("rejects a mobile number that doesn't start with 6-9", () => {
-    expect(errorsFor(applicantSchema, { ...validApplicant, mobile: "1234567890" }).mobile).toBeDefined();
+   it("rejects a mobile number that isn't a valid Ethiopian number", () => {
+    expect(errorsFor(applicantSchema, { ...validApplicant, mobile: "811234567" }).mobile).toBeDefined();
+  });
+
+  it("checks phone numbers against each country's format", () => {
+    const us = createApplicantSchema("US");
+    const gb = createApplicantSchema("GB");
+    expect(errorsFor(us, { ...validApplicant, mobile: "(415) 555-0132" })).toEqual({});
+    expect(errorsFor(us, { ...validApplicant, mobile: "1155550132" }).mobile).toBeDefined();
+    expect(errorsFor(gb, { ...validApplicant, mobile: "07123 456789" })).toEqual({});
+    expect(errorsFor(gb, { ...validApplicant, mobile: "08123456789" }).mobile).toBeDefined();
   });
 
   it("rejects an alternate number identical to the mobile", () => {

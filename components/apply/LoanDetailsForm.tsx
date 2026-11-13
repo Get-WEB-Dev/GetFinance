@@ -11,7 +11,7 @@ import { SelectField } from "@/components/ui/SelectField";
 import { TextField } from "@/components/ui/TextField";
 import { useReadyDraft } from "@/components/wizard/DraftProvider";
 import { StepActions } from "@/components/wizard/StepLayout";
-import { stateOptions } from "@/config/india-states";
+import { getCountryProfile } from "@/config/country-profiles";
 import { getLoanProduct } from "@/config/loans";
 import { getCurrencySymbol } from "@/config/countries";
 import { businessTypeOptions, industryOptions, loanPurposeOptions } from "@/config/options";
@@ -36,6 +36,7 @@ export function LoanDetailsForm() {
   const product = getLoanProduct(loanType, country);
   const formatCurrency = (amount: number) => formatMoney(amount, country);
   const currencySymbol = getCurrencySymbol(country);
+  const regionProfile = getCountryProfile(country).address;
 
   const schema = useMemo(() => createLoanDetailsSchema(loanType, country), [loanType, country]);
 
@@ -141,9 +142,9 @@ export function LoanDetailsForm() {
             />
           )}
           <TextField label="Property city" error={errors.propertyCity?.message} {...register("propertyCity")} />
-          <SelectField
-            label="Property state or union territory"
-            options={stateOptions}
+<SelectField
+            label={`Property ${regionProfile.regionLabel.toLowerCase()}`}
+            options={regionProfile.regions}
             error={errors.propertyState?.message}
             {...register("propertyState")}
           />

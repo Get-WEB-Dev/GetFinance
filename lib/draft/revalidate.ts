@@ -1,7 +1,7 @@
 import type { z } from "zod";
 import type { StepSlug } from "@/config/steps";
-import { addressSchema } from "@/lib/validation/address";
-import { applicantSchema } from "@/lib/validation/applicant";
+import { createAddressSchema } from "@/lib/validation/address";
+import { createApplicantSchema } from "@/lib/validation/applicant";
 import { createEmploymentSchema } from "@/lib/validation/employment";
 import { createFinancesSchema } from "@/lib/validation/finances";
 import { createLoanDetailsSchema } from "@/lib/validation/loan-details";
@@ -44,8 +44,8 @@ function checkDeclarations(draft: ApplicationDraft): StepValidation {
 
 export function revalidateDraft(draft: ApplicationDraft): StepValidation[] {
   return [
-    check("applicant", applicantSchema, draft.applicant),
-    check("address", addressSchema, draft.address),
+    check("applicant", createApplicantSchema(draft.country), draft.applicant),
+    check("address", createAddressSchema(draft.country), draft.address),
     check("employment", createEmploymentSchema(draft.loanType), draft.employment),
     check("loan-details", createLoanDetailsSchema(draft.loanType, draft.country), draft.loanDetails),
     check("finances", createFinancesSchema(draft.loanType), draft.finances),

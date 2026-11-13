@@ -9,7 +9,7 @@ import { steps, getStepPath } from "@/config/steps";
 import { buildEligibilityInput } from "@/lib/eligibility/input";
 import { evaluateEligibility } from "@/lib/eligibility/evaluate";
 import type { Decision, RuleOutcome } from "@/lib/eligibility/types";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency as formatMoney } from "@/lib/format/currency";
 import { formatPercent } from "@/lib/format/percent";
 import { formatTerm } from "@/lib/format/term";
 
@@ -39,10 +39,11 @@ const outcomeCopy: Record<RuleOutcome, { label: string; Icon: typeof CheckCircle
 
 export function PreApprovalSummary() {
   const { draft } = useReadyDraft();
+  const formatCurrency = (amount: number) => formatMoney(amount, draft.country);
 
   const input = buildEligibilityInput(draft);
   const result = input ? evaluateEligibility(input) : null;
-  const product = getLoanProduct(draft.loanType);
+  const product = getLoanProduct(draft.loanType, draft.country)
 
   if (!input || !result) {
     const nextStep = steps.find((step) => step.slug !== "review" && !draft.completedSteps.includes(step.slug));

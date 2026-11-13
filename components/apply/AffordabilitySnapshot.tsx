@@ -2,7 +2,7 @@ import { getLoanProduct } from "@/config/loans";
 import { calculateAffordability } from "@/lib/calculations/affordability";
 import { calculateRepayment } from "@/lib/calculations/repayment";
 import { getMonthlyIncome, getRequestedLoan } from "@/lib/draft/selectors";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency as formatMoney } from "@/lib/format/currency";
 import { formatPercent } from "@/lib/format/percent";
 import { parseAmount } from "@/lib/validation/helpers";
 import type { ApplicationDraft } from "@/types/application";
@@ -14,7 +14,8 @@ interface AffordabilitySnapshotProps {
 }
 
 export function AffordabilitySnapshot({ draft, monthlyExpenses, existingEmi }: AffordabilitySnapshotProps) {
-  const product = getLoanProduct(draft.loanType);
+  const formatCurrency = (amount: number) => formatMoney(amount, draft.country);
+  const product = getLoanProduct(draft.loanType, draft.country);
   const income = getMonthlyIncome(draft);
   const loan = getRequestedLoan(draft);
   const expenses = parseAmount(monthlyExpenses);

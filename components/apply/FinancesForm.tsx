@@ -11,7 +11,7 @@ import { RadioGroupField } from "@/components/ui/RadioGroupField";
 import { TextField } from "@/components/ui/TextField";
 import { useReadyDraft } from "@/components/wizard/DraftProvider";
 import { StepActions } from "@/components/wizard/StepLayout";
-import { locale } from "@/config/locale";
+import { getCurrencySymbol } from "@/config/countries";
 import { yesNoOptions } from "@/config/options";
 import { getStepPath } from "@/config/steps";
 import { useAutosave } from "@/hooks/use-autosave";
@@ -27,6 +27,7 @@ import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 export function FinancesForm() {
   const router = useRouter();
   const { draft, updateDraft } = useReadyDraft();
+  const currencySymbol = getCurrencySymbol(draft.country);
   const loanType = draft.loanType;
 
   const schema = useMemo(() => createFinancesSchema(loanType), [loanType]);
@@ -82,7 +83,7 @@ export function FinancesForm() {
       <div className="mt-6 grid gap-6 md:grid-cols-2">
         <TextField
           label="Monthly living expenses"
-          startAdornment={locale.currencySymbol}
+          startAdornment={currencySymbol}
           inputMode="numeric"
           maxLength={9}
           hint="Rent, food, utilities, transport and similar."
@@ -110,7 +111,7 @@ export function FinancesForm() {
         {hasLoans === "yes" && (
           <TextField
             label="Total existing monthly loan payments"
-            startAdornment={locale.currencySymbol}
+            startAdornment={currencySymbol}
             inputMode="numeric"
             maxLength={9}
             error={errors.existingMonthlyEmi?.message}
@@ -121,7 +122,7 @@ export function FinancesForm() {
         <TextField
           label="Savings and investments"
           optional
-          startAdornment={locale.currencySymbol}
+          startAdornment={currencySymbol}
           inputMode="numeric"
           maxLength={9}
           error={errors.savings?.message}
@@ -131,7 +132,7 @@ export function FinancesForm() {
         {loanType === "business" && (
           <TextField
             label="Annual business expenses"
-            startAdornment={locale.currencySymbol}
+            startAdornment={currencySymbol}
             inputMode="numeric"
             maxLength={9}
             error={errors.annualBusinessExpenses?.message}

@@ -7,7 +7,7 @@ import { SimulationNotice } from "@/components/ui/SimulationNotice";
 import { useReadyDraft } from "@/components/wizard/DraftProvider";
 import { getLoanProduct } from "@/config/loans";
 import { getStepPath } from "@/config/steps";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency as formatMoney } from "@/lib/format/currency";
 import { formatDateTime } from "@/lib/format/date";
 import { formatTerm } from "@/lib/format/term";
 
@@ -21,6 +21,8 @@ const outcomeLabel = { pass: "Met", refer: "Needs review", fail: "Not met" } as 
 
 export function SubmittedView() {
   const { draft } = useReadyDraft();
+  const formatCurrency = (amount: number) => formatMoney(amount, draft.country);
+  const product = getLoanProduct(draft.loanType, draft.country);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle");
 

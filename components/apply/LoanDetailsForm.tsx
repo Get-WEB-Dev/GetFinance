@@ -13,12 +13,12 @@ import { useReadyDraft } from "@/components/wizard/DraftProvider";
 import { StepActions } from "@/components/wizard/StepLayout";
 import { stateOptions } from "@/config/india-states";
 import { getLoanProduct } from "@/config/loans";
-import { locale } from "@/config/locale";
+import { getCurrencySymbol } from "@/config/countries";
 import { businessTypeOptions, industryOptions, loanPurposeOptions } from "@/config/options";
 import { getStepPath } from "@/config/steps";
 import { useAutosave } from "@/hooks/use-autosave";
 import { withCompletedStep } from "@/lib/draft/completion";
-import { formatCurrency } from "@/lib/format/currency";
+import { formatCurrency as formatMoney } from "@/lib/format/currency";
 import { formatTerm } from "@/lib/format/term";
 import {
   createLoanDetailsSchema,
@@ -31,10 +31,13 @@ import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 export function LoanDetailsForm() {
   const router = useRouter();
   const { draft, updateDraft } = useReadyDraft();
-  const loanType = draft.loanType;
-  const product = getLoanProduct(loanType);
+   const loanType = draft.loanType;
+  const country = draft.country;
+  const product = getLoanProduct(loanType, country);
+  const formatCurrency = (amount: number) => formatMoney(amount, country);
+  const currencySymbol = getCurrencySymbol(country);
 
-  const schema = useMemo(() => createLoanDetailsSchema(loanType), [loanType]);
+  const schema = useMemo(() => createLoanDetailsSchema(loanType, country), [loanType, country]);
 
   const form = useForm<LoanDetailsFormValues>({
     resolver: zodResolver(schema),
@@ -84,7 +87,7 @@ export function LoanDetailsForm() {
       <div className="mt-6 grid gap-6 md:grid-cols-2">
         <TextField
           label="Loan amount"
-          startAdornment={locale.currencySymbol}
+          startAdornment={currencySymbol}
           inputMode="numeric"
           maxLength={9}
           hint={`Between ${formatCurrency(product.minAmount)} and ${formatCurrency(product.maxAmount)}.`}
@@ -120,7 +123,7 @@ export function LoanDetailsForm() {
           <h2 className="font-semibold text-navy-900 md:col-span-2">Property details</h2>
           <TextField
             label="Property value"
-            startAdornment={locale.currencySymbol}
+            startAdornment={currencySymbol}
             inputMode="numeric"
             maxLength={9}
             error={errors.propertyValue?.message}
@@ -129,7 +132,7 @@ export function LoanDetailsForm() {
           {purpose === "purchase" && (
             <TextField
               label="Down payment"
-              startAdornment={locale.currencySymbol}
+              startAdornment={currencySymbol}
               inputMode="numeric"
               maxLength={9}
               hint="Enter 0 if none."
@@ -168,7 +171,7 @@ export function LoanDetailsForm() {
           />
           <TextField
             label="Annual revenue"
-            startAdornment={locale.currencySymbol}
+            startAdornment={currencySymbol}
             inputMode="numeric"
             maxLength={9}
             error={errors.annualRevenue?.message}
@@ -177,7 +180,7 @@ export function LoanDetailsForm() {
         </div>
       )}
 
-      <RepaymentEstimateCard loanType={loanType} amount={amount ?? ""} months={term ?? ""} />
+      <RepaymentEstimateCard loanType={loanType} amount={amount ?? ""} months={term ?? ""} country={country} />
 
       <StepActions
         back={

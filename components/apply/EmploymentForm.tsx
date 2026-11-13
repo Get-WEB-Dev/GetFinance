@@ -11,7 +11,7 @@ import { SelectField } from "@/components/ui/SelectField";
 import { TextField } from "@/components/ui/TextField";
 import { useReadyDraft } from "@/components/wizard/DraftProvider";
 import { StepActions } from "@/components/wizard/StepLayout";
-import { locale } from "@/config/locale";
+import { getCurrencySymbol } from "@/config/countries";
 import { employmentStatusOptions, incomeSourceOptions } from "@/config/options";
 import { allowedEmploymentStatuses } from "@/config/rules";
 import { getStepPath } from "@/config/steps";
@@ -28,6 +28,7 @@ import { useReviewOnMount } from "@/hooks/use-review-on-mount";
 export function EmploymentForm() {
   const router = useRouter();
   const { draft, updateDraft } = useReadyDraft();
+  const currencySymbol = getCurrencySymbol(draft.country);
 
   const schema = useMemo(() => createEmploymentSchema(draft.loanType), [draft.loanType]);
   const statusChoices = employmentStatusOptions.filter((option) =>
@@ -123,7 +124,7 @@ export function EmploymentForm() {
           <TextField
             label={incomeLabel}
             optional={status === "unemployed"}
-            startAdornment={locale.currencySymbol}
+            startAdornment={currencySymbol}
             inputMode="numeric"
             maxLength={9}
             hint="Before tax. Digits only."

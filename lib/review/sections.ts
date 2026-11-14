@@ -69,7 +69,7 @@ export function buildReviewSections(draft: ApplicationDraft): ReviewSection[] {
       "applicant",
       rows(
         ["Full name", applicant.fullName],
-        ["Date of birth", formatIsoDate(applicant.dateOfBirth)],
+        ["Date of birth", formatIsoDate(applicant.dateOfBirth, draft.country)],
         ["Email", applicant.email],
         ["Mobile", applicant.mobile],
         ["Alternate mobile", applicant.alternateMobile],

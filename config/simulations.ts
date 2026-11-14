@@ -8,7 +8,7 @@ export interface SimulatedFeature {
 export const simulatedFeatures: SimulatedFeature[] = [
   {
     id: "identity",
-    name: "PAN and Aadhaar verification",
+    name: "Identity verification",
     inThisDemo:
       "Checks the format, then a mock endpoint inside this app returns a made-up result. Only a masked value and a simulated reference are kept.",
     inProduction: "A licensed verification provider would check the number with the issuing authority, with consent.",

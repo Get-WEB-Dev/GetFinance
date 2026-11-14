@@ -1,6 +1,7 @@
 import { documentCatalog } from "@/config/documents";
 import { getLoanProduct } from "@/config/loans";
 import type { CountryCode } from "@/config/countries";
+import { getIdentityDocument } from "@/config/identity";
 import {
   businessTypeOptions,
   employmentStatusOptions,
@@ -154,8 +155,14 @@ export function buildReviewSections(draft: ApplicationDraft): ReviewSection[] {
     add(
       "verification",
       rows(
-        ["PAN (masked)", verification.pan ? `${verification.pan.maskedValue}, verified (simulated)` : ""],
-        ["Aadhaar (masked)", verification.aadhaar ? `${verification.aadhaar.maskedValue}, verified (simulated)` : ""],
+               [
+          `${getIdentityDocument(draft.country, "primary").title} (masked)`,
+          verification.primary ? `${verification.primary.maskedValue}, verified (simulated)` : "",
+        ],
+        [
+          `${getIdentityDocument(draft.country, "secondary").title} (masked)`,
+          verification.secondary ? `${verification.secondary.maskedValue}, verified (simulated)` : "",
+        ],
       ),
     );
   }

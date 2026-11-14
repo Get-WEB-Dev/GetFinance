@@ -5,8 +5,8 @@ import {
   person,
   reachStep,
   startApplication,
-  verifyAadhaar,
-  verifyPan,
+  verifySecondary,
+  verifyPrimary,
   waitForHydration,
 } from "./helpers/application";
 
@@ -27,38 +27,38 @@ test.describe("Identity verification", () => {
   test("a failed check blocks continuing until a valid number is verified", async ({ page }) => {
     await reachStep(page, "verification");
 
-    await verifyPan(page, simulationTestValues.pan.failed);
-    await expect(identityRegion(page, "PAN")).toContainText("Verification failed.");
-    await expect(identityRegion(page, "PAN")).not.toContainText("Simulation reference");
+    await verifyPrimary(page, simulationTestValues.primary.failed);
+    await expect(identityRegion(page, "primary")).toContainText("Verification failed.");
+    await expect(identityRegion(page, "primary")).not.toContainText("Simulation reference");
     await expect(page.getByRole("button", { name: "Save and continue" })).toBeDisabled();
 
-    await verifyPan(page, simulationTestValues.pan.verified);
-    await expect(identityRegion(page, "PAN")).toContainText("Simulation reference");
+    await verifyPrimary(page, simulationTestValues.primary.verified);
+    await expect(identityRegion(page, "primary")).toContainText("Simulation reference");
 
-    await verifyAadhaar(page, simulationTestValues.aadhaar.verified);
+    await verifySecondary(page, simulationTestValues.secondary.verified);
     await expect(page.getByRole("button", { name: "Save and continue" })).toBeEnabled();
   });
 
   test("a temporary service error can be retried", async ({ page }) => {
     await reachStep(page, "verification");
 
-    await verifyPan(page, simulationTestValues.pan.flaky);
-    await expect(identityRegion(page, "PAN")).toContainText("Something went wrong.");
+    await verifyPrimary(page, simulationTestValues.primary.flaky);
+    await expect(identityRegion(page, "primary")).toContainText("Something went wrong.");
 
-    await identityRegion(page, "PAN").getByRole("button", { name: "Try again" }).click();
-    await expect(identityRegion(page, "PAN")).toContainText("Simulation reference");
+    await identityRegion(page, "primary").getByRole("button", { name: "Try again" }).click();
+    await expect(identityRegion(page, "primary")).toContainText("Simulation reference");
   });
 
   test("a network failure shows an error and recovers when the network returns", async ({ page }) => {
     await reachStep(page, "verification");
 
     await page.route("**/api/verify/identity", (route) => route.abort());
-    await verifyPan(page, simulationTestValues.pan.verified);
-    await expect(identityRegion(page, "PAN")).toContainText("Something went wrong.");
+    await verifyPrimary(page, simulationTestValues.primary.verified);
+    await expect(identityRegion(page, "primary")).toContainText("Something went wrong.");
 
     await page.unroute("**/api/verify/identity");
-    await identityRegion(page, "PAN").getByRole("button", { name: "Try again" }).click();
-    await expect(identityRegion(page, "PAN")).toContainText("Simulation reference");
+    await identityRegion(page, "primary").getByRole("button", { name: "Try again" }).click();
+    await expect(identityRegion(page, "primary")).toContainText("Simulation reference");
   });
 });
 

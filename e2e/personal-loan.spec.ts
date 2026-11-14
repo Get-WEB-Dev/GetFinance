@@ -11,10 +11,10 @@ test.describe("Personal loan", () => {
     await expect(page.getByRole("region", { name: "Applicant", exact: true })).toContainText(person.fullName);
 
     // Privacy: full identity numbers are never shown or stored, and files are never stored.
-    await expect(page.locator("body")).not.toContainText(simulationTestValues.pan.verified);
+    await expect(page.locator("body")).not.toContainText(simulationTestValues.primary.verified);
     const stored = await page.evaluate(() => JSON.stringify(Object.entries(localStorage)));
-    expect(stored).not.toContain(simulationTestValues.pan.verified);
-    expect(stored).not.toContain(simulationTestValues.aadhaar.verified);
+    expect(stored).not.toContain(simulationTestValues.primary.verified);
+    expect(stored).not.toContain(simulationTestValues.secondary.verified);
     expect(stored).not.toContain("%PDF-");
 
     const id = applicationId(page);

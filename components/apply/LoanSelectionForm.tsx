@@ -30,7 +30,7 @@ export function LoanSelectionForm({ initialType, initialCountry }: { initialType
   } = useForm<LoanSelectionValues>({
     resolver: zodResolver(loanSelectionSchema),
     mode: "onChange",
-    defaultValues: { country: DEFAULT_COUNTRY, loanType: initialType },
+    defaultValues: { country: initialCountry ?? DEFAULT_COUNTRY, loanType: initialType },
   });
 
 

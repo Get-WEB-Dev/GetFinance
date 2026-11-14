@@ -45,7 +45,7 @@ export function LoanSelectionForm({ initialType }: { initialType?: LoanType }) {
   async function onSubmit(values: LoanSelectionValues) {
     setSubmitError(null);
     try {
-      const draft = createDraft(values.loanType);
+      const draft = createDraft(values.loanType, values.country);
       await draftRepository.create(draft);
       router.push(getStepPath(draft.id, "applicant"));
     } catch {

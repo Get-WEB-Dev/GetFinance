@@ -1,0 +1,1 @@
+export const COUNTRY_COOKIE = "gf_country";

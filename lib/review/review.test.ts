@@ -21,7 +21,7 @@ function completeDraft(): ApplicationDraft {
 
   return makeDraft({
     completedSteps: steps.map((step) => step.slug),
-    verification: { pan: identity, aadhaar: identity },
+    verification: { primary: identity, secondary: identity },
     documents: Object.fromEntries(
       getRequiredDocuments(base.loanType, base.employment?.employmentStatus).map((id) => [
         id,

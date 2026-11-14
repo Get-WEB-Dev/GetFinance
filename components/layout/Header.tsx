@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 import { brand } from "@/config/brand";
+import type { CountryCode } from "@/config/countries";
+import { CountrySwitcher } from "./CountrySwitcher";
 
 const navLinks = [
   { href: "/loans", label: "Loans" },
@@ -14,7 +16,7 @@ const navLinks = [
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-400";
 
-export function Header() {
+export function Header({ country }: { country: CountryCode }) {
   return (
     <>
       {/* <div className="bg-navy-900 text-xs text-slate-300">

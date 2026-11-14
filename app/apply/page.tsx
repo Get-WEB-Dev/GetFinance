@@ -38,7 +38,7 @@ export default async function ApplyPage({
       </p>
 
       <div className="mt-10">
-        <LoanSelectionForm initialType={initialType} />
+       <LoanSelectionForm key={country} initialType={initialType} initialCountry={country} />
       </div>
 
       <p className="mt-10 text-sm text-slate-600">

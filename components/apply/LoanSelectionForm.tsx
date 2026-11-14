@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { Check, Circle } from "lucide-react";
 import { getLoanProduct, getLoanProducts, type LoanType } from "@/config/loans";
-import { DEFAULT_COUNTRY, countries, countryCodes } from "@/config/countries";
+import { DEFAULT_COUNTRY, countries, countryCodes, type CountryCode } from "@/config/countries";
 import { getStepPath } from "@/config/steps";
 import { createDraft } from "@/lib/draft/create-draft";
 import { formatCurrency } from "@/lib/format/currency";
@@ -18,7 +18,7 @@ import {
 } from "@/lib/validation/loan-selection";
 import { Button } from "@/components/ui/Button";
 
-export function LoanSelectionForm({ initialType }: { initialType?: LoanType }) {
+export function LoanSelectionForm({ initialType, initialCountry }: { initialType?: LoanType; initialCountry?: CountryCode }) {
   const router = useRouter();
   const [submitError, setSubmitError] = useState<string | null>(null);
 

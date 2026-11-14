@@ -54,6 +54,7 @@ export function Header({ country }: { country: CountryCode }) {
           </nav>
 
           <div className="flex items-center gap-3">
+          <CountrySwitcher country={country} />
             <Link
               href="/apply"
               className={`hidden rounded-md bg-accent-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-700 sm:inline-flex ${focusRing}`}

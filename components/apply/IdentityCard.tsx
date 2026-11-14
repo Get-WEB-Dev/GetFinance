@@ -6,7 +6,8 @@ import { useForm } from "react-hook-form";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
-import { identityConfig } from "@/config/identity";
+import { useReadyDraft } from "@/components/wizard/DraftProvider";
+import { getIdentityDocument } from "@/config/identity";
 import { identityVerifier } from "@/lib/services";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { IdentityKind } from "@/types/verification";
@@ -28,7 +29,9 @@ interface IdentityCardProps {
 type Status = "idle" | "verifying" | "failed" | "error";
 
 export function IdentityCard({ kind, result, onVerified, onCleared }: IdentityCardProps) {
-  const config = identityConfig[kind];
+  const { draft } = useReadyDraft();
+  const country = draft.country;
+  const config = getIdentityDocument(country, kind);
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState<string | null>(null);
 
@@ -36,7 +39,7 @@ export function IdentityCard({ kind, result, onVerified, onCleared }: IdentityCa
   const lastValueRef = useRef("");
   const abortRef = useRef<AbortController | null>(null);
 
-   const schema = useMemo(() => createIdentityFormSchema(kind), [kind]);
+   const schema = useMemo(() => createIdentityFormSchema(kind, country), [kind, country]);
 
   const form = useForm<IdentityFormValues>({
     resolver: zodResolver(schema),
@@ -51,7 +54,7 @@ export function IdentityCard({ kind, result, onVerified, onCleared }: IdentityCa
     async function onSubmit({ value }: IdentityFormValues) {
     if (status === "verifying") return;
 
-    const normalized = normalizeIdentity(kind, value);
+    const normalized = normalizeIdentity(kind, value, country);
     if (lastValueRef.current !== normalized) {
       lastValueRef.current = normalized;
       attemptRef.current = 0;
@@ -65,7 +68,7 @@ export function IdentityCard({ kind, result, onVerified, onCleared }: IdentityCa
     setMessage(null);
 
     const outcome = await identityVerifier.verify(
-      { kind, value: normalized, attempt: attemptRef.current },
+      { kind, country, value: normalized, attempt: attemptRef.current },
       controller.signal,
     );
     if (controller.signal.aborted) return;
@@ -76,7 +79,7 @@ export function IdentityCard({ kind, result, onVerified, onCleared }: IdentityCa
       setStatus("idle");
       onVerified({
         status: "verified",
-        maskedValue: maskIdentity(kind, normalized),
+        maskedValue: maskIdentity(kind, normalized, country),
         referenceId: outcome.referenceId,
         verifiedAt: new Date().toISOString(),
       });

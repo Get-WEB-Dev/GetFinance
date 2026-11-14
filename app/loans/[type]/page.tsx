@@ -8,16 +8,17 @@ import { SimulationNotice } from "@/components/ui/SimulationNotice";
 import { documentCatalog, requiredDocumentsByLoanType } from "@/config/documents";
 import { eligibilityPolicies } from "@/config/eligibility";
 import { loanContent } from "@/config/loan-content";
-import { getLoanProduct, isLoanType, loanProducts } from "@/config/loans";
 import { employmentStatusOptions } from "@/config/options";
 import { allowedEmploymentStatuses, applicantRules } from "@/config/rules";
 import { formatCurrency } from "@/lib/format/currency";
 import { formatTerm } from "@/lib/format/term";
 import { getRepaymentExample } from "@/lib/loans/example";
+import { getEligibilityPolicy } from "@/config/eligibility";
+import { getLoanProduct, getLoanProducts, isLoanType } from "@/config/loans";
+import { formatCurrency as formatMoney } from "@/lib/format/currency";
+import { getCurrentCountry } from "@/lib/country/server";
 
-export function generateStaticParams() {
-  return loanProducts.map((product) => ({ type: product.type }));
-}
+
 
 interface LoanDetailPageProps {
   params: Promise<{ type: string }>;
@@ -37,11 +38,13 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
   const { type } = await params;
   if (!isLoanType(type)) notFound();
 
-  const product = getLoanProduct(type);
+    const country = await getCurrentCountry();
+  const formatCurrency = (amount: number) => formatMoney(amount, country);
+  const product = getLoanProduct(type, country);
   const content = loanContent[type];
-  const policy = eligibilityPolicies[type];
+  const policy = getEligibilityPolicy(type, country);
   const example = getRepaymentExample(product);
-  const others = loanProducts.filter((item) => item.type !== type);
+  const others = getLoanProducts(country).filter((item) => item.type !== type);
 
   return (
     <PageShell

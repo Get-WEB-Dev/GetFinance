@@ -2,9 +2,10 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { LoanProduct } from "@/config/loans";
 import { formatCurrency } from "@/lib/format/currency";
+import type { CountryCode } from "@/config/countries";
 import { formatTerm } from "@/lib/format/term";
 
-export function LoanCard({ product }: { product: LoanProduct }) {
+export function LoanCard({ product, country }: { product: LoanProduct; country: CountryCode }) {
   const Icon = product.icon;
 
   return (
@@ -19,7 +20,7 @@ export function LoanCard({ product }: { product: LoanProduct }) {
         <div className="flex justify-between gap-4">
           <dt className="text-slate-500">Illustrative amount</dt>
           <dd className="text-right font-medium text-navy-900">
-            {formatCurrency(product.minAmount)} – {formatCurrency(product.maxAmount)}
+            {formatCurrency(product.minAmount, country)} – {formatCurrency(product.maxAmount, country)}
           </dd>
         </div>
         <div className="flex justify-between gap-4">

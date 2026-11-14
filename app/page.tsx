@@ -7,7 +7,8 @@ import {
   Save,
   Search,
 } from "lucide-react";
-import { loanProducts } from "@/config/loans";
+import { getLoanProducts } from "@/config/loans";
+import { getCurrentCountry } from "@/lib/country/server";
 import { LoanCard } from "@/components/loans/LoanCard";
 import { HeroPreview } from "@/components/home/HeroPreview";
 
@@ -40,7 +41,9 @@ const faqs = [
 ];
 
 
-export default function HomePage() {
+export default async function HomePage() {
+  const country = await getCurrentCountry();
+  const products = getLoanProducts(country);
   return (
     <>
       {/* Hero */}
@@ -71,7 +74,7 @@ export default function HomePage() {
   </ButtonLink>
 </div>
           </div>
-          <HeroPreview />
+          <HeroPreview  country={country}/>
         </div>
       </section>
 
@@ -100,8 +103,8 @@ export default function HomePage() {
             Three sample products with their own requirements. All amounts and terms are illustrative.
           </p>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {loanProducts.map((product) => (
-              <LoanCard key={product.type} product={product} />
+            {products.map((product) => (
+             <LoanCard key={product.type} product={product} country={country} />
             ))}
           </div>
         </div>

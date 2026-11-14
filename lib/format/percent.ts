@@ -5,6 +5,6 @@ const formatter = new Intl.NumberFormat(locale.language, {
   maximumFractionDigits: 0,
 });
 
-export function formatPercent(ratio: number): string {
+export function formatPercent(ratio: number, country: string): string {
   return formatter.format(ratio);
 }

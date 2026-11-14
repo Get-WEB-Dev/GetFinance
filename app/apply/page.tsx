@@ -3,6 +3,7 @@ import Link from "next/link";
 import { isLoanType } from "@/config/loans";
 import { steps } from "@/config/steps";
 import { LoanSelectionForm } from "@/components/apply/LoanSelectionForm";
+import { getCurrentCountry } from "@/lib/country/server";
 
 export const metadata: Metadata = {
   title: "Start your application",

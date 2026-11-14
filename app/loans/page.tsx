@@ -3,11 +3,13 @@ import { LoanIcon } from "@/components/loans/LoanIcon";
 import { PageShell } from "@/components/layout/PageShell";
 import { ButtonLink } from "@/components/ui/Button";
 import { SimulationNotice } from "@/components/ui/SimulationNotice";
-import { eligibilityPolicies } from "@/config/eligibility";
+import type { CountryCode } from "@/config/countries";
+import { getEligibilityPolicy } from "@/config/eligibility";
 import { requiredDocumentsByLoanType } from "@/config/documents";
-import { getLoanProduct, loanProducts, type LoanType } from "@/config/loans";
+import { getLoanProduct, getLoanProducts, type LoanType } from "@/config/loans";
 import { employmentStatusOptions } from "@/config/options";
 import { allowedEmploymentStatuses } from "@/config/rules";
+import { getCurrentCountry } from "@/lib/country/server";
 import { formatCurrency } from "@/lib/format/currency";
 import { formatPercent } from "@/lib/format/percent";
 import { formatTerm } from "@/lib/format/term";
@@ -20,45 +22,48 @@ export const metadata: Metadata = {
 const statusLabel = (value: string) =>
   employmentStatusOptions.find((option) => option.value === value)?.label ?? value;
 
-const rows: { label: string; value: (type: LoanType) => string }[] = [
+const rows: { label: string; value: (type: LoanType, country: CountryCode) => string }[] = [
   {
     label: "Illustrative amount",
-    value: (type) => {
-      const product = getLoanProduct(type);
-      return `${formatCurrency(product.minAmount)} to ${formatCurrency(product.maxAmount)}`;
+    value: (type, country) => {
+      const product = getLoanProduct(type, country);
+      return `${formatCurrency(product.minAmount, country)} to ${formatCurrency(product.maxAmount, country)}`;
     },
   },
   {
     label: "Illustrative term",
-    value: (type) => {
-      const product = getLoanProduct(type);
+    value: (type, country) => {
+      const product = getLoanProduct(type, country);
       return `${formatTerm(product.minMonths)} to ${formatTerm(product.maxMonths)}`;
     },
   },
-  { label: "Illustrative rate", value: (type) => `${getLoanProduct(type).illustrativeRate}% a year` },
+  {
+    label: "Illustrative rate",
+    value: (type, country) => `${getLoanProduct(type, country).illustrativeRate}% a year`,
+  },
   {
     label: "Who can apply",
     value: (type) => allowedEmploymentStatuses[type].map(statusLabel).join(", "),
   },
   {
     label: "Minimum monthly income",
-    value: (type) => formatCurrency(eligibilityPolicies[type].minMonthlyIncome),
+    value: (type, country) => formatCurrency(getEligibilityPolicy(type, country).minMonthlyIncome, country),
   },
   {
     label: "Most of your income that can go to repayments",
-    value: (type) => formatPercent(eligibilityPolicies[type].maxFoir),
+    value: (type, country) => formatPercent(getEligibilityPolicy(type, country).maxFoir, country),
   },
   {
     label: "Most you can borrow compared with property value",
-    value: (type) => {
-      const limit = eligibilityPolicies[type].maxLtv;
-      return limit === undefined ? "Not applicable" : formatPercent(limit);
+    value: (type, country) => {
+      const limit = getEligibilityPolicy(type, country).maxLtv;
+      return limit === undefined ? "Not applicable" : formatPercent(limit, country);
     },
   },
   {
     label: "Minimum years the business has operated",
-    value: (type) => {
-      const years = eligibilityPolicies[type].minYearsOperating;
+    value: (type, country) => {
+      const years = getEligibilityPolicy(type, country).minYearsOperating;
       return years === undefined ? "Not applicable" : `${years} years`;
     },
   },
@@ -68,7 +73,10 @@ const rows: { label: string; value: (type: LoanType) => string }[] = [
   },
 ];
 
-export default function LoansPage() {
+export default async function LoansPage() {
+  const country = await getCurrentCountry();
+  const products = getLoanProducts(country);
+
   return (
     <PageShell
       wide
@@ -96,7 +104,7 @@ export default function LoansPage() {
               <td className="p-4">
                 <span className="sr-only">Feature</span>
               </td>
-              {loanProducts.map((product) => (
+              {products.map((product) => (
                 <th key={product.type} scope="col" className="p-4 align-bottom">
                   <LoanIcon product={product} />
                   <p className="mt-2 text-base font-semibold text-navy-900">{product.name}</p>
@@ -116,9 +124,9 @@ export default function LoansPage() {
                 <th scope="row" className="w-1/4 p-4 font-medium text-slate-600">
                   {row.label}
                 </th>
-                {loanProducts.map((product) => (
+                {products.map((product) => (
                   <td key={product.type} className="p-4 text-navy-900">
-                    {row.value(product.type)}
+                    {row.value(product.type, country)}
                   </td>
                 ))}
               </tr>

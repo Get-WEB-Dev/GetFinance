@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { isCountryCode, type CountryCode } from "@/config/countries";
 import { simulateIdentityCheck } from "@/lib/simulation/identity";
 
 const bodySchema = z.object({
-  kind: z.enum(["pan", "aadhaar"]),
+  kind: z.enum(["primary", "secondary"]),
+  country: z.custom<CountryCode>((v) => typeof v === "string" && isCountryCode(v)),
   value: z.string().max(32),
   attempt: z.number().int().min(1).max(20),
 });
@@ -34,8 +36,8 @@ export async function POST(request: Request) {
 
   await new Promise((resolve) => setTimeout(resolve, delayMs()));
 
-  const { kind, value, attempt } = parsed.data;
-  const outcome = simulateIdentityCheck(kind, value, attempt);
+  const { kind, country, value, attempt } = parsed.data;
+  const outcome = simulateIdentityCheck(kind, value, attempt, country);
 
   return NextResponse.json(
     { ...outcome, simulated: true },

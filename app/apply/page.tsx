@@ -15,6 +15,7 @@ export default async function ApplyPage({
   searchParams: Promise<{ type?: string }>;
 }) {
   const { type } = await searchParams;
+  const country = await getCurrentCountry();
   const initialType = type && isLoanType(type) ? type : undefined;
 
   return (

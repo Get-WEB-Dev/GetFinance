@@ -94,7 +94,7 @@ export function SubmittedView() {
       <dl className="mt-6 grid gap-4 rounded-lg border border-line bg-white p-5 sm:grid-cols-2">
         <div>
           <dt className="text-sm text-slate-600">Submitted</dt>
-          <dd className="font-semibold text-navy-900">{formatDateTime(submission.submittedAt)}</dd>
+          <dd className="font-semibold text-navy-900">{formatDateTime(submission.submittedAt, draft.country)}</dd>
         </div>
         <div>
           <dt className="text-sm text-slate-600">Loan</dt>

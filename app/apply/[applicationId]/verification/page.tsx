@@ -6,7 +6,7 @@ export default function VerificationPage() {
     <StepLayout
       slug="verification"
       title="Identity verification"
-      description="Confirm your identity with a simulated PAN and Aadhaar check."
+      description="Confirm your identity with a simulated identity check."
     >
       <VerificationStep />
     </StepLayout>

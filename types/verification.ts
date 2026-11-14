@@ -1,7 +1,11 @@
-export type IdentityKind = "pan" | "aadhaar";
+import type { CountryCode } from "@/config/countries";
+
+/** Every country asks for two identity documents: a primary and a secondary one. */
+export type IdentityKind = "primary" | "secondary";
 
 export interface VerifyRequest {
   kind: IdentityKind;
+  country: CountryCode;
   value: string;
   attempt: number;
 }

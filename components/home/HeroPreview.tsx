@@ -1,7 +1,14 @@
 import { CheckCircle2, FileText, ShieldCheck } from "lucide-react";
+import type { CountryCode } from "@/config/countries";
+import { getLoanProduct } from "@/config/loans";
 import { formatCurrency } from "@/lib/format/currency";
+import { getRepaymentExample } from "@/lib/loans/example";
 
-export function HeroPreview() {
+export function HeroPreview({ country }: { country: CountryCode }) {
+  const example = getRepaymentExample(getLoanProduct("personal", country));
+  const amount = example?.amount ?? 0;
+  const monthly = example ? Math.round(example.estimate.monthlyPayment) : 0;
+
   return (
     <div
       className="rounded-xl border border-white/10 bg-white p-6 text-navy-900 shadow-2xl"
@@ -28,11 +35,11 @@ export function HeroPreview() {
       <dl className="mt-6 grid grid-cols-2 gap-4">
         <div className="rounded-lg bg-surface p-4">
           <dt className="text-xs text-slate-500">Requested amount</dt>
-        <dd className="mt-1 text-2xl font-semibold">{formatCurrency(500_000)}</dd>
+          <dd className="mt-1 text-2xl font-semibold">{formatCurrency(amount, country)}</dd>
         </div>
         <div className="rounded-lg bg-surface p-4">
           <dt className="text-xs text-slate-500">Est. monthly repayment</dt>
-         <dd className="mt-1 text-2xl font-semibold">{formatCurrency(10_624)}</dd>
+          <dd className="mt-1 text-2xl font-semibold">{formatCurrency(monthly, country)}</dd>
         </div>
       </dl>
 

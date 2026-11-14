@@ -1,6 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 import { documentCatalog } from "../../config/documents";
-import { simulationTestValues } from "../../config/identity";
+import { DEFAULT_COUNTRY } from "../../config/countries";
+import { getIdentityDocument, simulationTestValues } from "../../config/identity";
 import { getLoanProduct, type LoanType } from "../../config/loans";
 import { getRequiredDocuments } from "../../lib/documents/requirements";
 
@@ -18,8 +19,7 @@ export const person: Person = {
   mobile: "911234567",
 };
 
-export const panLabel = "PAN (Permanent Account Number)";
-export const aadhaarLabel = "Aadhaar number";
+
 
 const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -213,33 +213,35 @@ export async function completeFinances(page: Page, { loanType }: Context) {
   await expect(page.getByRole("radio", { name: "No", exact: true })).toBeChecked();
   if (loanType === "business") await fillField(page, "Annual business expenses", "600000");
 }
+export type IdentitySlot = "primary" | "secondary";
 
-export const identityRegion = (page: Page, title: "PAN" | "Aadhaar") =>
-  page.getByRole("region", { name: title, exact: true });
+export const identityRegion = (page: Page, slot: IdentitySlot) =>
+  page.getByRole("region", { name: getIdentityDocument(DEFAULT_COUNTRY, slot).title, exact: true });
 
-export async function verifyPan(page: Page, value: string) {
-  await fillField(page, panLabel, value);
-  await page.getByRole("button", { name: /^(Verify PAN|Try again)$/ }).click();
+async function verifyIdentity(page: Page, slot: IdentitySlot, value: string) {
+  const document = getIdentityDocument(DEFAULT_COUNTRY, slot);
+  await fillField(page, document.label, value);
+  await page
+    .getByRole("button", { name: new RegExp(`^(${escapeRegExp(document.verifyLabel)}|Try again)$`) })
+    .click();
 }
 
-export async function verifyAadhaar(page: Page, value: string) {
-  await fillField(page, aadhaarLabel, value);
-  await page.getByRole("button", { name: /^(Verify Aadhaar|Try again)$/ }).click();
-}
+export const verifyPrimary = (page: Page, value: string) => verifyIdentity(page, "primary", value);
+export const verifySecondary = (page: Page, value: string) => verifyIdentity(page, "secondary", value);
 
 /** Safe to run when an identity is already verified: it only verifies what's still missing. */
 export async function completeVerification(page: Page) {
   await waitForHydration(page);
 
-  if ((await identityRegion(page, "PAN").getByText("Simulation reference").count()) === 0) {
-    await verifyPan(page, simulationTestValues.pan.verified);
+  if ((await identityRegion(page, "primary").getByText("Simulation reference").count()) === 0) {
+    await verifyPrimary(page, simulationTestValues.primary.verified);
   }
-  await expect(identityRegion(page, "PAN")).toContainText("Simulation reference");
+  await expect(identityRegion(page, "primary")).toContainText("Simulation reference");
 
-  if ((await identityRegion(page, "Aadhaar").getByText("Simulation reference").count()) === 0) {
-    await verifyAadhaar(page, simulationTestValues.aadhaar.verified);
+  if ((await identityRegion(page, "secondary").getByText("Simulation reference").count()) === 0) {
+    await verifySecondary(page, simulationTestValues.secondary.verified);
   }
-  await expect(identityRegion(page, "Aadhaar")).toContainText("Simulation reference");
+  await expect(identityRegion(page, "secondary")).toContainText("Simulation reference");
 }
 
 export const samplePdf = {

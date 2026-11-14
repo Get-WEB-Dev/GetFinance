@@ -23,7 +23,7 @@ export const validAddress = {
 
 export const validEmployment = {
   employmentStatus: "salaried",
-  employerName: "Example Pvt Ltd",
+  employerName: "Example Trading PLC",
   designation: "Analyst",
   yearsWithEmployer: "3",
   businessName: "",

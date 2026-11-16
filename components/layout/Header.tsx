@@ -51,7 +51,6 @@ export function Header({ country }: { country: CountryCode }) {
               >
                 {link.label}
               </Link>
-              
             ))}
             <Link className={`rounded text-sm font-medium text-slate-200 hover:text-white ${focusRing}`} href="/account">Account</Link>
           </nav>

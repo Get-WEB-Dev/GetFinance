@@ -10,6 +10,7 @@ const navLinks = [
   { href: "/#how-it-works", label: "How it works" },
   { href: "/#faq", label: "FAQ" },
   { href: "/resume", label: "Resume application" },
+  {href : "/account", label: "Äccount"}
   
 ];
 
@@ -52,7 +53,7 @@ export function Header({ country }: { country: CountryCode }) {
                 {link.label}
               </Link>
             ))}
-            <Link className={`rounded text-sm font-medium text-slate-200 hover:text-white ${focusRing}`} href="/account">Account</Link>
+            {/* <Link className={`rounded text-sm font-medium text-slate-200 hover:text-white ${focusRing}`} >Account</Link> */}
           </nav>
 
           <div className="flex items-center gap-3">

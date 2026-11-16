@@ -5,6 +5,7 @@ import { brand } from "@/config/brand";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getCurrentCountry } from "@/lib/country/server";
+import { AssistantPanel } from "@/components/assistant/AssistantPanel";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +27,7 @@ export default async function RootLayout({
         <Header country={country} />
         <main className="flex-1">{children}</main>
         <Footer />
+        <AssistantPanel country={country} />
       </body>
     </html>
   );

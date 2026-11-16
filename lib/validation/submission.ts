@@ -47,7 +47,7 @@ export const submissionReceivedSchema = z.object({
   status: z.literal("received"),
   reference: z.string(),
   receivedAt: z.string(),
-  simulated: z.literal(true),
+  simulated: z.boolean(),
 });
 
 export type SubmissionReceived = z.infer<typeof submissionReceivedSchema>;

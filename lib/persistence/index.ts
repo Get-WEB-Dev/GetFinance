@@ -1,4 +1,4 @@
-import { LocalStorageDraftRepository } from "./local-storage-draft-repository";
+import { HybridDraftRepository } from "./hybrid-draft-repository";
 import type { DraftRepository } from "./draft-repository";
 
-export const draftRepository: DraftRepository = new LocalStorageDraftRepository();
+export const draftRepository: DraftRepository = new HybridDraftRepository();

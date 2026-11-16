@@ -41,6 +41,12 @@ export default async function AccountPage() {
                                     {row.reference} · {row.submitted_at ? "submitted" : "draft"}
                   {row.decision ? ` · pre-check: ${row.decision}` : ""} · updated{" "}
                 </p>
+                                {row.submitted_at && (
+                  <p className="mt-1 text-sm text-slate-700">
+                    Review: {row.review_status === "more_info" ? "more information needed" : row.review_status}
+                    {row.review_note ? ` (${row.review_note})` : ""}
+                  </p>
+                )}
               </div>
               <Link
                 href={`/apply/${row.id}/${step}`}

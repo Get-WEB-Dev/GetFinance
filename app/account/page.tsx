@@ -11,9 +11,10 @@ export default async function AccountPage() {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) redirect("/login");
 
-  const { data: rows } = await supabase
+    const { data: rows } = await supabase
     .from("applications")
-    .select("id, reference, loan_type, status, updated_at, draft, decision, submitted_at")
+    .select("id, reference, loan_type, status, updated_at, draft, decision, submitted_at, review_status, review_note")
+    .eq("user_id", auth.user.id)
     .order("updated_at", { ascending: false });
 
   return (

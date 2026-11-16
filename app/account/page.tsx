@@ -13,7 +13,7 @@ export default async function AccountPage() {
 
   const { data: rows } = await supabase
     .from("applications")
-    .select("id, reference, loan_type, status, updated_at, draft")
+    .select("id, reference, loan_type, status, updated_at, draft, decision, submitted_at")
     .order("updated_at", { ascending: false });
 
   return (
@@ -37,15 +37,15 @@ export default async function AccountPage() {
               <div>
                 <p className="font-medium capitalize">{row.loan_type} loan</p>
                 <p className="text-sm text-slate-600">
-                  {row.reference} · {row.status} · updated{" "}
-                  {new Date(row.updated_at).toLocaleDateString()}
+                                    {row.reference} · {row.submitted_at ? "submitted" : "draft"}
+                  {row.decision ? ` · pre-check: ${row.decision}` : ""} · updated{" "}
                 </p>
               </div>
               <Link
                 href={`/apply/${row.id}/${step}`}
                 className="text-sm font-medium text-navy-900 underline"
               >
-                {row.status === "submitted" ? "View" : "Continue"}
+                {row.submitted_at ? "View" : "Continue"}
               </Link>
             </li>
           );

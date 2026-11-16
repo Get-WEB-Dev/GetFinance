@@ -53,7 +53,7 @@ export function Header({ country }: { country: CountryCode }) {
               </Link>
               
             ))}
-            <Link href="/account">Account</Link>
+            <Link className={`rounded text-sm font-medium text-slate-200 hover:text-white ${focusRing}`} href="/account">Account</Link>
           </nav>
 
           <div className="flex items-center gap-3">

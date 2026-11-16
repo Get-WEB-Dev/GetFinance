@@ -17,7 +17,10 @@ const fail = (message: string, status: number) =>
 
 /** Returns a response when the real (database) path applies, or null to use the simulation. */
 async function submitToDatabase(request: SubmissionRequest): Promise<NextResponse | null> {
-  if (!supabaseConfigured || !process.env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const hasServiceKey = Boolean(
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY
+  );
+  if (!supabaseConfigured || !hasServiceKey) return null;
 
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();

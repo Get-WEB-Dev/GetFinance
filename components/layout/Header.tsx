@@ -10,6 +10,7 @@ const navLinks = [
   { href: "/#how-it-works", label: "How it works" },
   { href: "/#faq", label: "FAQ" },
   { href: "/resume", label: "Resume application" },
+  
 ];
 
 // On the dark header the focus ring needs a light colour to stay clearly visible.
@@ -50,7 +51,9 @@ export function Header({ country }: { country: CountryCode }) {
               >
                 {link.label}
               </Link>
+              
             ))}
+            <Link href="/account">Account</Link>
           </nav>
 
           <div className="flex items-center gap-3">
